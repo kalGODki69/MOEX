@@ -1,3 +1,17 @@
-<h2 tuiTitle="l">
-  MOEX / Акции
-</h2>
+<div class="header-row">
+  <h2 tuiTitle="l">
+    MOEX / Акции
+  </h2>
+
+  <div [formGroup]="form" class="radio-group">
+    <label tuiLabel>
+      <input tuiRadio type="radio" formControlName="choice" value="option1" />
+      EN
+    </label>
+
+    <label tuiLabel>
+      <input tuiRadio type="radio" formControlName="choice" value="option2" />
+      RU
+    </label>
+  </div>
+</div>
