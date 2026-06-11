@@ -1,9 +1,12 @@
 import { Component } from '@angular/core';
+import {TuiTitle} from '@taiga-ui/core';
 
 @Component({
   selector: 'app-shares',
-  imports: [],
+  imports: [
+    TuiTitle
+  ],
   templateUrl: './shares.html',
-  styleUrl: './shares.css',
+  styleUrl: './shares.less',
 })
 export class Shares {}
