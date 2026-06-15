@@ -16,7 +16,7 @@ export class LanguageService {
     this.langCodeSubject.next(lang);
   }
 
-  getCurrentLanguage(): TuiLanguage {
-    return this.languageSubject.value;
+  getCurrentLanguageCode(): 'ru' | 'en' {
+    return this.langCodeSubject.value;
   }
 }

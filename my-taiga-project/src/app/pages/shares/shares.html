@@ -1,17 +1,18 @@
 <div class="header-row">
   <h2 tuiTitle="l">{{ title$ | async }}</h2>
-
   <div [formGroup]="form" class="radio-group">
     <label tuiLabel>
-      <input tuiRadio type="radio" formControlName="choice" value="en" />
-      EN
+      <input tuiRadio type="radio" formControlName="choice" value="en" /> EN
     </label>
     <label tuiLabel>
-      <input tuiRadio type="radio" formControlName="choice" value="ru" />
-      RU
+      <input tuiRadio type="radio" formControlName="choice" value="ru" /> RU
     </label>
   </div>
 </div>
+
 <div class="table-container">
-  <app-shares-table [data]="shares"></app-shares-table>
+  @if ((shares$ | async) === null) {
+    <div class="loading">Загрузка...</div>
+  }
+  <app-shares-table [data]="(shares$ | async) ?? []"></app-shares-table>
 </div>
