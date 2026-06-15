@@ -6,6 +6,7 @@ import { LanguageService } from '../../services/language';
 import { map } from 'rxjs/operators';
 import { AsyncPipe } from '@angular/common';
 import {TuiInputPhone} from '@taiga-ui/kit';
+import {Share, SharesTableComponent} from '../../shared/ui/shares-table/shares-table';
 
 @Component({
   selector: 'app-shares',
@@ -15,7 +16,8 @@ import {TuiInputPhone} from '@taiga-ui/kit';
     TuiRadio,
     ReactiveFormsModule,
     AsyncPipe,
-    TuiInputPhone
+    TuiInputPhone,
+    SharesTableComponent
   ],
   templateUrl: './shares.html',
   styleUrls: ['./shares.less'],
@@ -23,7 +25,7 @@ import {TuiInputPhone} from '@taiga-ui/kit';
 export class Shares {
   private languageService = inject(LanguageService);
   private destroyRef = inject(DestroyRef);
-
+  shares: Share[] = [];
   form = new FormGroup({
     choice: new FormControl<'en' | 'ru'>('ru'),
   });

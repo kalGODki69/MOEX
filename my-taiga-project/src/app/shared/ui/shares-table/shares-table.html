@@ -1,17 +1,46 @@
-<table tuiTable>
-  <thead>
-  <tr>
-    <th tuiTh>Код</th>
-    <th tuiTh>Наименование</th>
-    <th tuiTh>Последняя</th>
-    <th tuiTh>Изменение, %</th>
-    <th tuiTh>Первая %</th>
-    <th tuiTh>Мин.</th>
-    <th tuiTh>Макс.</th>
-    <th tuiTh>Объем</th>
-    <th tuiTh>Время</th>
-  </tr>
-  </thead>
-  <tbody tuiTbody>
-  </tbody>
-</table>
+@if (headers$ | async; as headers) {
+  <table tuiTable>
+    <thead>
+    <tr>
+      @for (col of headers; track col.key) {
+        <th tuiTh>{{ col.label }}</th>
+      }
+    </tr>
+    </thead>
+    <tbody tuiTbody>
+      @for (item of data; track item.code) {
+        <tr>
+          @for (col of headers; track col.key) {
+            <td tuiTd>
+              <ng-container [ngSwitch]="col.key">
+                <ng-container *ngSwitchCase="'changePercents'">
+                  <span [style.color]="item.changePercents >= 0 ? 'green' : 'red'">
+                    {{ item.changePercents | number:'1.2-2' }}%
+                  </span>
+                </ng-container>
+                <ng-container *ngSwitchCase="'first'">
+                  {{ item.first | number:'1.2-2' }}%
+                </ng-container>
+                <ng-container *ngSwitchCase="'last'">
+                  {{ item.last | number:'1.2-2' }}
+                </ng-container>
+                <ng-container *ngSwitchCase="'min'">
+                  {{ item.min | number:'1.2-2' }}
+                </ng-container>
+                <ng-container *ngSwitchCase="'max'">
+                  {{ item.max | number:'1.2-2' }}
+                </ng-container>
+                <ng-container *ngSwitchCase="'volume'">
+                  {{ item.volume | number }}
+                </ng-container>
+                <ng-container *ngSwitchDefault>
+                  {{ item[col.key] }}
+                </ng-container>
+              </ng-container>
+            </td>
+          }
+        </tr>
+      }
+    </tbody>
+  </table>
+}
