@@ -8,6 +8,7 @@ import { AsyncPipe } from '@angular/common';
 import { Observable, of } from 'rxjs';
 import { SharesTableComponent, Share } from '../../shared/ui/shares-table/shares-table';
 import { MoexService } from '../../services/moex';
+import {TuiComboBox} from '@taiga-ui/kit';
 
 @Component({
   selector: 'app-shares',
@@ -17,7 +18,8 @@ import { MoexService } from '../../services/moex';
     TuiRadio,
     ReactiveFormsModule,
     AsyncPipe,
-    SharesTableComponent
+    SharesTableComponent,
+    TuiComboBox
   ],
   templateUrl: './shares.html',
   styleUrls: ['./shares.less'],
