@@ -9,7 +9,7 @@
     </thead>
     <tbody tuiTbody>
       @for (item of data; track item.code) {
-        <tr>
+        <tr (click)="onRowClick(item.code)" style="cursor: pointer;">
           @for (col of headers; track col.key) {
             <td tuiTd>
               <ng-container [ngSwitch]="col.key">

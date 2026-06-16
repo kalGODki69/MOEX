@@ -9,6 +9,7 @@ import { Observable, of } from 'rxjs';
 import { SharesTableComponent, Share } from '../../shared/ui/shares-table/shares-table';
 import { MoexService } from '../../services/moex';
 import {TuiComboBox} from '@taiga-ui/kit';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-shares',
@@ -28,6 +29,12 @@ export class Shares implements OnInit {
   private languageService = inject(LanguageService);
   private moexService = inject(MoexService);
   private destroyRef = inject(DestroyRef);
+
+  private router = inject(Router);
+
+  navigateToShare(secid: string): void {
+    this.router.navigate(['/share', secid]);
+  }
 
   form = new FormGroup({
     choice: new FormControl<'en' | 'ru'>('ru'),

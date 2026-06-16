@@ -1,5 +1,5 @@
-import {Component, inject, Input} from '@angular/core';
-import { TuiTableDirective, TuiTableTbody, TuiTableTh } from '@taiga-ui/addon-table';
+import { Component, inject, Input, Output, EventEmitter } from '@angular/core';
+import {TuiTableDirective, TuiTableTbody, TuiTableTd, TuiTableTh} from '@taiga-ui/addon-table';
 import {LanguageService} from '../../../services/language';
 import { CommonModule } from '@angular/common';
 import {Observable} from 'rxjs';
@@ -25,6 +25,7 @@ export interface Share {
     TuiTableDirective,
     TuiTableTbody,
     TuiTableTh,
+    TuiTableTd,
   ],
   templateUrl: './shares-table.html',
   styleUrl: './shares-table.less',
@@ -33,6 +34,7 @@ export interface Share {
 export class SharesTableComponent {
   private langService = inject(LanguageService);
   @Input() data: Share[] = [];
+  @Output() rowClick = new EventEmitter<string>();
 
   headers$: Observable<{ key: keyof Share; label: string }[]> = this.langService.langCode$.pipe(
     map(lang => {
@@ -63,4 +65,8 @@ export class SharesTableComponent {
       }
     })
   );
+
+  onRowClick(secid: string): void {
+    this.rowClick.emit(secid);
+  }
 }

@@ -31,10 +31,8 @@ export class Share implements OnInit {
     choice: new FormControl<'en' | 'ru'>('ru'),
   });
 
-  // Поток с данными конкретной акции
   share$!: Observable<ShareInterface | null>;
 
-  // Адаптивный заголовок в формате "MOEX / Акции / Название"
   title$!: Observable<string>;
 
   constructor() {
@@ -46,12 +44,10 @@ export class Share implements OnInit {
   }
 
   ngOnInit(): void {
-    // Получаем secid из параметров маршрута
     const secid$ = this.route.params.pipe(
       map(params => params['secid'])
     );
 
-    // Загружаем данные акции
     this.share$ = secid$.pipe(
       switchMap(secid => {
         if (!secid) return of(null);
@@ -61,7 +57,6 @@ export class Share implements OnInit {
       })
     );
 
-    // Формируем заголовок: MOEX / [Тип] / [Название]
     this.title$ = combineLatest([
       this.languageService.langCode$,
       this.share$
