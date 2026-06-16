@@ -43,6 +43,15 @@ export class MoexService {
     const idxCode = securitiesColumns.indexOf('SECID');
     const idxName = securitiesColumns.indexOf('SHORTNAME');
 
+    // Новые индексы для дополнительных полей
+    const idxIsin = securitiesColumns.indexOf('ISIN');
+    const idxBoardId = securitiesColumns.indexOf('BOARDID');
+    const idxBoardName = securitiesColumns.indexOf('BOARDNAME');
+    const idxListLevel = securitiesColumns.indexOf('LISTLEVEL');
+    const idxLotSize = securitiesColumns.indexOf('LOTSIZE');
+    const idxPrevDate = securitiesColumns.indexOf('PREVDATE');
+    const idxStatus = securitiesColumns.indexOf('STATUS');
+
     const idxSecId = marketdataColumns.indexOf('SECID');
     const idxLast = marketdataColumns.indexOf('LAST');
     const idxChange = marketdataColumns.indexOf('CHANGE');
@@ -82,6 +91,13 @@ export class MoexService {
         max: market.max ?? 0,
         volume: market.volume ?? 0,
         time: market.time ?? new Date().toLocaleTimeString(),
+        isin: row[idxIsin] || '',
+        boardId: row[idxBoardId] || '',
+        boardName: row[idxBoardName] || '',
+        listLevel: parseInt(row[idxListLevel], 10) || 0,
+        lotSize: parseInt(row[idxLotSize], 10) || 0,
+        prevDate: row[idxPrevDate] || '',
+        status: row[idxStatus] || '',
       };
     });
   }

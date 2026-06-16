@@ -9,3 +9,55 @@
     </label>
   </div>
 </div>
+
+<div class="content-wrapper">
+  <!-- TODO: График -->
+  <div class="chart-area">
+    <div class="chart-placeholder">
+      <p>График</p>
+    </div>
+  </div>
+
+  <div class="params-area">
+    @if (share$ | async; as share) {
+      <div class="params-block">
+        <div class="params-grid">
+          <div class="param-item">
+            <span class="param-label">Код ценной бумаги</span>
+            <span class="param-value">{{ share.code }}</span>
+          </div>
+          <div class="param-item">
+            <span class="param-label">ISIN код</span>
+            <span class="param-value">{{ share.isin || '-' }}</span>
+          </div>
+          <div class="param-item">
+            <span class="param-label">ID режима торгов</span>
+            <span class="param-value">{{ share.boardId || '-' }}</span>
+          </div>
+          <div class="param-item">
+            <span class="param-label">Уровень листинга</span>
+            <span class="param-value">{{ share.listLevel || '-' }}</span>
+          </div>
+          <div class="param-item">
+            <span class="param-label">Режим торгов</span>
+            <span class="param-value">{{ share.boardName || '-' }}</span>
+          </div>
+          <div class="param-item">
+            <span class="param-label">Лотность</span>
+            <span class="param-value">{{ share.lotSize || '-' }}</span>
+          </div>
+          <div class="param-item">
+            <span class="param-label">Дата начала торгов</span>
+            <span class="param-value">{{ share.prevDate || '-' }}</span>
+          </div>
+          <div class="param-item">
+            <span class="param-label">Для квал. инвесторов</span>
+            <span class="param-value">{{ share.status === 'N' ? '×' : '✓' }}</span>
+          </div>
+        </div>
+      </div>
+    } @else {
+      <p>Загрузка параметров...</p>
+    }
+  </div>
+</div>
