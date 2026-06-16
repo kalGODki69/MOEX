@@ -4,10 +4,77 @@
   justify-content: space-between;
   margin-top: 1rem;
   margin-left: 1rem;
+  margin-right: 1rem;
 }
 
 .radio-group {
   display: flex;
   gap: 1rem;
   margin-right: 2rem;
+}
+
+.content-wrapper {
+  display: flex;
+  gap: 2rem;
+  margin: 2rem 1rem;
+  min-height: 400px; // чтобы визуально было видно
+}
+
+.chart-area {
+  flex: 2; // занимает 2/3 ширины
+  background: #fafafa;
+  border-radius: 8px;
+  border: 1px dashed #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+}
+
+.chart-placeholder {
+  font-size: 1.2rem;
+  color: #999;
+}
+
+.params-area {
+  flex: 1;
+}
+
+.params-block {
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  border: 1px solid #696969;
+}
+
+.params-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.param-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.param-label {
+  font-size: 0.75rem;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.2rem;
+}
+
+.param-value {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .content-wrapper {
+    flex-direction: column;
+  }
+  .chart-area {
+    min-height: 200px;
+  }
 }

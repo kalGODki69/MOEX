@@ -14,7 +14,14 @@ export interface Share {
   min: number,
   max: number,
   volume: number,
-  time: string
+  time: string,
+  isin?: string;
+  boardId?: string;
+  boardName?: string;
+  listLevel?: number;
+  lotSize?: number;
+  prevDate?: string;
+  status?: string;
 }
 
 @Component({
