@@ -7,9 +7,17 @@ import { Share } from '../shared/ui/shares-table/shares-table';
 export class MoexService {
   private http = inject(HttpClient);
   private baseUrl = 'https://iss.moex.com/iss/engines/stock/markets/shares/boardgroups/57/securities.json?iss.only=marketdata,securities';
+  private indexUrl = 'https://iss.moex.com/iss/engines/stock/markets/index/securities.json?iss.only=marketdata,securities';
 
   getShares(lang: 'ru' | 'en' = 'ru'): Observable<Share[]> {
     const url = `${this.baseUrl}&lang=${lang}&sort_column=SHORTNAME&sort_order=asc`;
+    return this.http.get<any>(url).pipe(
+      map(response => this.transformResponse(response))
+    );
+  }
+
+  getIndices(lang: 'ru' | 'en' = 'ru'): Observable<Share[]> {
+    const url = `${this.indexUrl}&lang=${lang}&sort_column=SHORTNAME&sort_order=asc`;
     return this.http.get<any>(url).pipe(
       map(response => this.transformResponse(response))
     );
