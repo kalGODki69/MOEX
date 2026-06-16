@@ -16,6 +16,17 @@ export class MoexService {
     );
   }
 
+  getIndex(secid: string, lang: 'ru' | 'en' = 'ru'): Observable<Share> {
+    const url = `https://iss.moex.com/iss/engines/stock/markets/index/securities/${secid}.json?iss.only=marketdata,securities&lang=${lang}`;
+    return this.http.get<any>(url).pipe(
+      map(response => {
+        const shares = this.transformResponse(response);
+        return shares.length > 0 ? shares[0] : null;
+      }),
+      map(share => share ?? { code: secid, name: '', last: 0, changePercents: 0, first: 0, min: 0, max: 0, volume: 0, time: '' })
+    );
+  }
+
   getIndices(lang: 'ru' | 'en' = 'ru'): Observable<Share[]> {
     const url = `${this.indexUrl}&lang=${lang}&sort_column=SHORTNAME&sort_order=asc`;
     return this.http.get<any>(url).pipe(
@@ -43,7 +54,6 @@ export class MoexService {
     const idxCode = securitiesColumns.indexOf('SECID');
     const idxName = securitiesColumns.indexOf('SHORTNAME');
 
-    // Новые индексы для дополнительных полей
     const idxIsin = securitiesColumns.indexOf('ISIN');
     const idxBoardId = securitiesColumns.indexOf('BOARDID');
     const idxBoardName = securitiesColumns.indexOf('BOARDNAME');
@@ -53,22 +63,50 @@ export class MoexService {
     const idxStatus = securitiesColumns.indexOf('STATUS');
 
     const idxSecId = marketdataColumns.indexOf('SECID');
-    const idxLast = marketdataColumns.indexOf('LAST');
+    const idxLast = this.findColumnIndex(marketdataColumns, ['LAST', 'LASTVALUE', 'CURRENTVALUE', 'CLOSEPRICE']);
+    const idxFirst = this.findColumnIndex(marketdataColumns, ['OPEN', 'OPENVALUE', 'FIRST']);
+    const idxMin = this.findColumnIndex(marketdataColumns, ['LOW', 'LOWVALUE', 'MIN']);
+    const idxMax = this.findColumnIndex(marketdataColumns, ['HIGH', 'HIGHVALUE', 'MAX']);
+    const idxVolume = this.findColumnIndex(marketdataColumns, ['VOLUME', 'VOLTODAY', 'QTY']);
+    const idxTime = this.findColumnIndex(marketdataColumns, ['TIME', 'UPDATETIME', 'SYSTIME']);
+
+    const idxLastChangePcnt = marketdataColumns.indexOf('LASTCHANGEPRCNT');
     const idxChange = marketdataColumns.indexOf('CHANGE');
-    const idxFirst = marketdataColumns.indexOf('OPEN');
-    const idxMin = marketdataColumns.indexOf('LOW');
-    const idxMax = marketdataColumns.indexOf('HIGH');
-    const idxVolume = marketdataColumns.indexOf('VOLUME');
-    const idxTime = marketdataColumns.indexOf('TIME');
 
     const marketMap = new Map<string, any>();
     for (const row of marketdataData) {
       const secid = row[idxSecId];
       if (secid) {
         const last = parseFloat(row[idxLast]);
+        let changePercents = 0;
+
+        if (idxLastChangePcnt !== -1) {
+          const raw = parseFloat(row[idxLastChangePcnt]);
+          if (!isNaN(raw)) changePercents = raw;
+        }
+
+        if (changePercents === 0 && idxChange !== -1) {
+          const change = parseFloat(row[idxChange]);
+          if (!isNaN(change) && last !== 0) {
+            const prev = last - change;
+            if (prev !== 0) changePercents = (change / prev) * 100;
+          }
+        }
+
+        if (changePercents === 0) {
+          const idxChangeValue = this.findColumnIndex(marketdataColumns, ['CHANGEVALUE', 'LASTCHANGE']);
+          if (idxChangeValue !== -1) {
+            const change = parseFloat(row[idxChangeValue]);
+            if (!isNaN(change) && last !== 0) {
+              const prev = last - change;
+              if (prev !== 0) changePercents = (change / prev) * 100;
+            }
+          }
+        }
+
         marketMap.set(secid, {
           last: isNaN(last) ? 0 : last,
-          changePercents: this.calcChangePercent(row[idxChange], last),
+          changePercents: changePercents,
           first: parseFloat(row[idxFirst]) || 0,
           min: parseFloat(row[idxMin]) || 0,
           max: parseFloat(row[idxMax]) || 0,
@@ -102,11 +140,11 @@ export class MoexService {
     });
   }
 
-  private calcChangePercent(changeRaw: any, last: number): number {
-    const change = parseFloat(changeRaw);
-    if (isNaN(change) || last === 0) return 0;
-    const prev = last - change;
-    if (prev === 0) return 0;
-    return (change / prev) * 100;
+  private findColumnIndex(columns: string[], possibleNames: string[]): number {
+    for (const name of possibleNames) {
+      const idx = columns.indexOf(name);
+      if (idx !== -1) return idx;
+    }
+    return -1;
   }
 }

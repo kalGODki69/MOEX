@@ -8,6 +8,7 @@ import { AsyncPipe } from '@angular/common';
 import { Observable, of } from 'rxjs';
 import { SharesTableComponent, Share } from '../../../shared/ui/shares-table/shares-table';
 import { MoexService } from '../../../services/moex';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-indices',
@@ -26,6 +27,12 @@ export class Indices implements OnInit {
   private languageService = inject(LanguageService);
   private moexService = inject(MoexService);
   private destroyRef = inject(DestroyRef);
+
+  private router = inject(Router);
+
+  navigateToInstrument(secid: string): void {
+    this.router.navigate(['/share/index', secid]);
+  }
 
   form = new FormGroup({
     choice: new FormControl<'en' | 'ru'>('ru'),

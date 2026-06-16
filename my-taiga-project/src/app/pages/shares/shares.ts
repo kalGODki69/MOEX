@@ -32,8 +32,8 @@ export class Shares implements OnInit {
 
   private router = inject(Router);
 
-  navigateToShare(secid: string): void {
-    this.router.navigate(['/share', secid]);
+  navigateToInstrument(secid: string): void {
+    this.router.navigate(['/share/share', secid]);
   }
 
   form = new FormGroup({

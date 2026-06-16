@@ -31,8 +31,7 @@ export class Share implements OnInit {
     choice: new FormControl<'en' | 'ru'>('ru'),
   });
 
-  share$!: Observable<ShareInterface | null>;
-
+  instrument$!: Observable<ShareInterface | null>;
   title$!: Observable<string>;
 
   constructor() {
@@ -44,28 +43,43 @@ export class Share implements OnInit {
   }
 
   ngOnInit(): void {
-    const secid$ = this.route.params.pipe(
-      map(params => params['secid'])
+    const params$ = this.route.params.pipe(
+      map(params => ({
+        type: params['type'] as 'share' | 'index',
+        secid: params['secid'] as string,
+      }))
     );
 
-    this.share$ = secid$.pipe(
-      switchMap(secid => {
+    this.instrument$ = params$.pipe(
+      switchMap(({ type, secid }) => {
         if (!secid) return of(null);
-        return this.moexService.getShare(secid).pipe(
-          catchError(() => of(null))
-        );
+        let request$: Observable<ShareInterface | null>;
+        if (type === 'share') {
+          request$ = this.moexService.getShare(secid);
+        } else if (type === 'index') {
+          request$ = this.moexService.getIndex(secid);
+        } else {
+          return of(null);
+        }
+        return request$.pipe(catchError(() => of(null)));
       })
     );
 
     this.title$ = combineLatest([
       this.languageService.langCode$,
-      this.share$
+      this.instrument$
     ]).pipe(
-      map(([lang, share]) => {
+      map(([lang, instrument]) => {
         const prefix = 'MOEX';
-        const type = lang === 'ru' ? 'Акции' : 'Shares';
-        const name = share?.name || share?.code || '';
-        return `${prefix} / ${type} / ${name}`;
+        const currentType = this.route.snapshot.params['type'];
+        let typeText: string;
+        if (currentType === 'share') {
+          typeText = lang === 'ru' ? 'Акции' : 'Shares';
+        } else {
+          typeText = lang === 'ru' ? 'Индексы' : 'Indices';
+        }
+        const name = instrument?.name || instrument?.code || '';
+        return `${prefix} / ${typeText} / ${name}`;
       })
     );
   }

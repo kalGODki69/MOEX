@@ -13,8 +13,9 @@
 <div class="table-container">
   <app-shares-table
     [data]="(shares$ | async) ?? []"
-    (rowClick)="navigateToShare($event)"
+    (rowClick)="navigateToInstrument($event)"
   ></app-shares-table>
+
   @if ((shares$ | async) === null) {
     <div class="loading">Загрузка...</div>
   }
