@@ -23,6 +23,17 @@ export class MoexService {
     );
   }
 
+  getShare(secid: string, lang: 'ru' | 'en' = 'ru'): Observable<Share> {
+    const url = `https://iss.moex.com/iss/engines/stock/markets/shares/boardgroups/57/securities/${secid}.json?iss.only=marketdata,securities&lang=${lang}`;
+    return this.http.get<any>(url).pipe(
+      map(response => {
+        const shares = this.transformResponse(response);
+        return shares.length > 0 ? shares[0] : null;
+      }),
+      map(share => share ?? { code: secid, name: '', last: 0, changePercents: 0, first: 0, min: 0, max: 0, volume: 0, time: '' })
+    );
+  }
+
   private transformResponse(raw: any): Share[] {
     const securitiesData = raw.securities?.data || [];
     const securitiesColumns = raw.securities?.columns || [];
