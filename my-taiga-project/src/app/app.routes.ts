@@ -7,5 +7,5 @@ export const routes: Routes = [
   { path: '', redirectTo: '/shares', pathMatch: 'full' },
   { path: 'shares', component: Shares },
   { path: 'indices', component: Indices },
-  { path: 'share/:type/:secid', component: Share },
+  { path: 'share/:secid', component: Share },
 ];

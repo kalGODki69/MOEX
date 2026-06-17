@@ -3,7 +3,6 @@
 <div class="table-container">
   <app-shares-table
     [data]="(indices$ | async) ?? []"
-    (rowClick)="navigateToInstrument($event)"
   ></app-shares-table>
 
   @if ((indices$ | async) === null) {

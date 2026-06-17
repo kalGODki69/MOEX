@@ -1,28 +1,20 @@
-import { Component, inject, DestroyRef, OnInit } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { TuiTitle, TuiRadio } from '@taiga-ui/core';
-import { LanguageService } from '../../services/language';
-import { map, startWith, switchMap, catchError } from 'rxjs/operators';
+import { Component, inject, OnInit } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { Observable, of } from 'rxjs';
+import { map, startWith, switchMap, catchError } from 'rxjs/operators';
 import { SharesTableComponent, Share } from '../../shared/ui/shares-table/shares-table';
 import { MoexService } from '../../services/moex';
-import {TuiComboBox} from '@taiga-ui/kit';
-import {Router} from '@angular/router';
-import {Header} from '../../shared/ui/header/header';
+import { LanguageService } from '../../services/language';
+import { Router } from '@angular/router';
+import { Header } from '../../shared/ui/header/header';
 
 @Component({
   selector: 'app-shares',
   standalone: true,
   imports: [
-    TuiTitle,
-    TuiRadio,
-    ReactiveFormsModule,
     AsyncPipe,
     SharesTableComponent,
-    TuiComboBox,
-    Header
+    Header,
   ],
   templateUrl: './shares.html',
   styleUrls: ['./shares.less'],
@@ -30,29 +22,15 @@ import {Header} from '../../shared/ui/header/header';
 export class Shares implements OnInit {
   private languageService = inject(LanguageService);
   private moexService = inject(MoexService);
-  private destroyRef = inject(DestroyRef);
-
   private router = inject(Router);
-
-  navigateToInstrument(secid: string): void {
-    this.router.navigate(['/share/share', secid]);
-  }
-
-  form = new FormGroup({
-    choice: new FormControl<'en' | 'ru'>('ru'),
-  });
 
   shares$!: Observable<Share[]>;
   title$ = this.languageService.langCode$.pipe(
     map(lang => lang === 'ru' ? 'MOEX / Акции' : 'MOEX / Shares')
   );
 
-  constructor() {
-    this.form.controls.choice.valueChanges
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(lang => {
-        if (lang) this.languageService.setLanguage(lang);
-      });
+  navigateToShare(secid: string): void {
+    this.router.navigate(['/share', secid]);
   }
 
   ngOnInit(): void {
