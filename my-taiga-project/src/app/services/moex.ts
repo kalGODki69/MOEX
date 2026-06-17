@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
-import { Share } from '../shared/ui/shares-table/shares-table';
+import { Share } from '../shared/models/share.model';
 
 @Injectable({ providedIn: 'root' })
 export class MoexService {

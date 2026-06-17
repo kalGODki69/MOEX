@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { AsyncPipe } from '@angular/common';
 import { LanguageService } from '../../services/language';
 import { MoexService } from '../../services/moex';
-import { Share as ShareInterface } from '../../shared/ui/shares-table/shares-table';
+import { Share as ShareInterface } from '../../shared/models/share.model';
 import { Observable, of, combineLatest, map, switchMap, catchError } from 'rxjs';
 import { Header } from '../../shared/ui/header/header';
 

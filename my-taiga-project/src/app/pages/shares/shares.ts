@@ -2,11 +2,12 @@ import { Component, inject, OnInit } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { Observable, of } from 'rxjs';
 import { map, startWith, switchMap, catchError } from 'rxjs/operators';
-import { SharesTableComponent, Share } from '../../shared/ui/shares-table/shares-table';
+import { SharesTableComponent } from '../../shared/ui/shares-table/shares-table';
 import { MoexService } from '../../services/moex';
 import { LanguageService } from '../../services/language';
 import { Router } from '@angular/router';
 import { Header } from '../../shared/ui/header/header';
+import { Share } from '../../shared/models/share.model';
 
 @Component({
   selector: 'app-shares',
