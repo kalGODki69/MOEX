@@ -1,0 +1,11 @@
+<div class="header-row">
+  <h2 tuiTitle="l">{{ title }}</h2>
+  <div [formGroup]="form" class="radio-group">
+    <label tuiLabel>
+      <input tuiRadio type="radio" formControlName="choice" value="en" /> EN
+    </label>
+    <label tuiLabel>
+      <input tuiRadio type="radio" formControlName="choice" value="ru" /> RU
+    </label>
+  </div>
+</div>

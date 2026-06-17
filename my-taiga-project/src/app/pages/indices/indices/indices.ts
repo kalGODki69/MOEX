@@ -9,6 +9,7 @@ import { Observable, of } from 'rxjs';
 import { SharesTableComponent, Share } from '../../../shared/ui/shares-table/shares-table';
 import { MoexService } from '../../../services/moex';
 import {Router} from '@angular/router';
+import {Header} from '../../../shared/ui/header/header';
 
 @Component({
   selector: 'app-indices',
@@ -19,6 +20,7 @@ import {Router} from '@angular/router';
     ReactiveFormsModule,
     AsyncPipe,
     SharesTableComponent,
+    Header,
   ],
   templateUrl: './indices.html',
   styleUrls: ['./indices.less'],

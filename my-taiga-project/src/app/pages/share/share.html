@@ -1,17 +1,6 @@
-<div class="header-row">
-  <h2 tuiTitle="l">{{ title$ | async }}</h2>
-  <div [formGroup]="form" class="radio-group">
-    <label tuiLabel>
-      <input tuiRadio type="radio" formControlName="choice" value="en" /> EN
-    </label>
-    <label tuiLabel>
-      <input tuiRadio type="radio" formControlName="choice" value="ru" /> RU
-    </label>
-  </div>
-</div>
+<app-header [title]="(title$ | async) || 'MOEX / Акции'"></app-header>
 
 <div class="content-wrapper">
-  <!-- TODO: График -->
   <div class="chart-area">
     <div class="chart-placeholder">
       <p>График</p>

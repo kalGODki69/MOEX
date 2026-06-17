@@ -8,6 +8,7 @@ import { MoexService } from '../../services/moex';
 import { Share as ShareInterface } from '../../shared/ui/shares-table/shares-table';
 import { Observable, of, combineLatest, map, switchMap, catchError } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import {Header} from '../../shared/ui/header/header';
 
 @Component({
   selector: 'app-share',
@@ -17,6 +18,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     ReactiveFormsModule,
     TuiTitle,
     TuiRadio,
+    Header,
   ],
   templateUrl: './share.html',
   styleUrl: './share.less',
