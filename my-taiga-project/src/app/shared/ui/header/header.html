@@ -9,3 +9,11 @@
     </label>
   </div>
 </div>
+
+@if (navLinks$ | async; as navLinks) {
+  <nav class="sub-nav">
+    @for (item of navLinks; track item.link) {
+      <a [routerLink]="item.link" routerLinkActive="active">{{ item.label }}</a>
+    }
+  </nav>
+}

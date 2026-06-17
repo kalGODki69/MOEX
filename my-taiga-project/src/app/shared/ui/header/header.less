@@ -11,4 +11,43 @@
   display: flex;
   gap: 1rem;
   margin-right: 2rem;
+
+  label {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    cursor: pointer;
+  }
+
+  input[type="radio"] {
+    vertical-align: middle;
+  }
+}
+
+.sub-nav {
+  display: flex;
+  gap: 1.5rem;
+  padding: 0.5rem 1rem;
+  border-top: 1px solid #e0e0e0;
+  margin: 0.5rem 1rem 0;
+
+  a {
+    text-decoration: none;
+    color: #474747;
+    font-weight: 500;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    transition: background 0.2s;
+
+    &:hover {
+      background: #e9ecef;
+    }
+
+    &.active {
+      color: #000;
+      text-decoration: underline;
+      text-underline-offset: 7px;
+      text-decoration-thickness: 2px;
+    }
+  }
 }

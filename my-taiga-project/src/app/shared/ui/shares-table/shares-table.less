@@ -21,3 +21,20 @@ th, td {
   padding: 12px 8px;
   text-align: left;
 }
+
+tbody tr {
+  cursor: default;
+}
+
+tr.clickable {
+  cursor: pointer !important;
+  transition: background 0.2s;
+}
+
+tr.clickable:hover {
+  background: #f5f5f5;
+}
+
+tr.clickable td {
+  cursor: pointer !important;
+}

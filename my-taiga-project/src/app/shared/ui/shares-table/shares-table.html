@@ -9,7 +9,10 @@
     </thead>
     <tbody tuiTbody>
       @for (item of data; track item.code) {
-        <tr (click)="onRowClick(item.code)" style="cursor: pointer;">
+        <tr
+          [routerLink]="clickable ? ['/share', item.code] : null"
+          [class.clickable]="clickable"
+        >
           @for (col of headers; track col.key) {
             <td tuiTd>
               <ng-container [ngSwitch]="col.key">

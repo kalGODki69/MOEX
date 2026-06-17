@@ -5,7 +5,6 @@ import { map, startWith, switchMap, catchError } from 'rxjs/operators';
 import { SharesTableComponent } from '../../shared/ui/shares-table/shares-table';
 import { MoexService } from '../../services/moex';
 import { LanguageService } from '../../services/language';
-import { Router } from '@angular/router';
 import { Header } from '../../shared/ui/header/header';
 import { Share } from '../../shared/models/share.model';
 
@@ -23,16 +22,11 @@ import { Share } from '../../shared/models/share.model';
 export class Shares implements OnInit {
   private languageService = inject(LanguageService);
   private moexService = inject(MoexService);
-  private router = inject(Router);
 
   shares$!: Observable<Share[]>;
   title$ = this.languageService.langCode$.pipe(
     map(lang => lang === 'ru' ? 'MOEX / Акции' : 'MOEX / Shares')
   );
-
-  navigateToShare(secid: string): void {
-    this.router.navigate(['/share', secid]);
-  }
 
   ngOnInit(): void {
     this.shares$ = this.languageService.langCode$.pipe(
