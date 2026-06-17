@@ -12,41 +12,79 @@
       <div class="params-block">
         <div class="params-grid">
           <div class="param-item">
-            <span class="param-label">Код ценной бумаги</span>
+            <span class="param-label">{{ (translations$ | async)?.params?.code }}</span>
             <span class="param-value">{{ share.code }}</span>
           </div>
           <div class="param-item">
-            <span class="param-label">ISIN код</span>
+            <span class="param-label">{{ (translations$ | async)?.params?.isin }}</span>
             <span class="param-value">{{ share.isin || '-' }}</span>
           </div>
           <div class="param-item">
-            <span class="param-label">ID режима торгов</span>
+            <span class="param-label">{{ (translations$ | async)?.params?.boardId }}</span>
             <span class="param-value">{{ share.boardId || '-' }}</span>
           </div>
           <div class="param-item">
-            <span class="param-label">Уровень листинга</span>
+            <span class="param-label">{{ (translations$ | async)?.params?.listLevel }}</span>
             <span class="param-value">{{ share.listLevel || '-' }}</span>
           </div>
           <div class="param-item">
-            <span class="param-label">Режим торгов</span>
+            <span class="param-label">{{ (translations$ | async)?.params?.boardName }}</span>
             <span class="param-value">{{ share.boardName || '-' }}</span>
           </div>
           <div class="param-item">
-            <span class="param-label">Лотность</span>
+            <span class="param-label">{{ (translations$ | async)?.params?.lotSize }}</span>
             <span class="param-value">{{ share.lotSize || '-' }}</span>
           </div>
           <div class="param-item">
-            <span class="param-label">Дата начала торгов</span>
+            <span class="param-label">{{ (translations$ | async)?.params?.prevDate }}</span>
             <span class="param-value">{{ share.prevDate || '-' }}</span>
           </div>
           <div class="param-item">
-            <span class="param-label">Для квал. инвесторов</span>
+            <span class="param-label">{{ (translations$ | async)?.params?.status }}</span>
             <span class="param-value">{{ share.status === 'N' ? '×' : '✓' }}</span>
           </div>
         </div>
       </div>
+
+      <div class="trade-data-block">
+        <h3 class="trade-data-title">{{ (translations$ | async)?.tradeData?.title }}</h3>
+        <div class="trade-data-grid">
+          <div class="trade-item">
+            <span class="trade-label">{{ (translations$ | async)?.tradeData?.prevPrice }}</span>
+            <span class="trade-value">{{ share.prevPrice | number:'1.2-2' }} ₽</span>
+          </div>
+          <div class="trade-item">
+            <span class="trade-label">{{ (translations$ | async)?.tradeData?.open }}</span>
+            <span class="trade-value">{{ share.open | number:'1.2-2' }} ₽</span>
+          </div>
+          <div class="trade-item">
+            <span class="trade-label">{{ (translations$ | async)?.tradeData?.low }}</span>
+            <span class="trade-value">{{ share.low | number:'1.2-2' }} ₽</span>
+          </div>
+          <div class="trade-item">
+            <span class="trade-label">{{ (translations$ | async)?.tradeData?.high }}</span>
+            <span class="trade-value">{{ share.high | number:'1.2-2' }} ₽</span>
+          </div>
+          <div class="trade-item">
+            <span class="trade-label">{{ (translations$ | async)?.tradeData?.valueToday }}</span>
+            <span class="trade-value">{{ share.valueToday | number:'1.2-2' }} ₽</span>
+          </div>
+          <div class="trade-item">
+            <span class="trade-label">{{ (translations$ | async)?.tradeData?.valueTodayRur }}</span>
+            <span class="trade-value">{{ share.valueTodayRur | number:'1.2-2' }} ₽</span>
+          </div>
+          <div class="trade-item">
+            <span class="trade-label">{{ (translations$ | async)?.tradeData?.volumeToday }}</span>
+            <span class="trade-value">{{ share.volumeToday | number }}</span>
+          </div>
+          <div class="trade-item">
+            <span class="trade-label">{{ (translations$ | async)?.tradeData?.valueTodayUsd }}</span>
+            <span class="trade-value">{{ share.valueTodayUsd | number:'1.2-2' }} ₽</span>
+          </div>
+        </div>
+      </div>
     } @else {
-      <p>Загрузка параметров...</p>
+      <p>Загрузка данных...</p>
     }
   </div>
 </div>

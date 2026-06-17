@@ -16,17 +16,6 @@ export class MoexService {
     );
   }
 
-  getIndex(secid: string, lang: 'ru' | 'en' = 'ru'): Observable<Share> {
-    const url = `https://iss.moex.com/iss/engines/stock/markets/index/securities/${secid}.json?iss.only=marketdata,securities&lang=${lang}`;
-    return this.http.get<any>(url).pipe(
-      map(response => {
-        const shares = this.transformResponse(response);
-        return shares.length > 0 ? shares[0] : null;
-      }),
-      map(share => share ?? { code: secid, name: '', last: 0, changePercents: 0, first: 0, min: 0, max: 0, volume: 0, time: '' })
-    );
-  }
-
   getIndices(lang: 'ru' | 'en' = 'ru'): Observable<Share[]> {
     const url = `${this.indexUrl}&lang=${lang}&sort_column=SHORTNAME&sort_order=asc`;
     return this.http.get<any>(url).pipe(
@@ -41,7 +30,17 @@ export class MoexService {
         const shares = this.transformResponse(response);
         return shares.length > 0 ? shares[0] : null;
       }),
-      map(share => share ?? { code: secid, name: '', last: 0, changePercents: 0, first: 0, min: 0, max: 0, volume: 0, time: '' })
+      map(share => share ?? {
+        code: secid,
+        name: '',
+        last: 0,
+        changePercents: 0,
+        first: 0,
+        min: 0,
+        max: 0,
+        volume: 0,
+        time: ''
+      })
     );
   }
 
@@ -53,7 +52,6 @@ export class MoexService {
 
     const idxCode = securitiesColumns.indexOf('SECID');
     const idxName = securitiesColumns.indexOf('SHORTNAME');
-
     const idxIsin = securitiesColumns.indexOf('ISIN');
     const idxBoardId = securitiesColumns.indexOf('BOARDID');
     const idxBoardName = securitiesColumns.indexOf('BOARDNAME');
@@ -61,6 +59,7 @@ export class MoexService {
     const idxLotSize = securitiesColumns.indexOf('LOTSIZE');
     const idxPrevDate = securitiesColumns.indexOf('PREVDATE');
     const idxStatus = securitiesColumns.indexOf('STATUS');
+    const idxPrevPrice = securitiesColumns.indexOf('PREVPRICE');
 
     const idxSecId = marketdataColumns.indexOf('SECID');
     const idxLast = this.findColumnIndex(marketdataColumns, ['LAST', 'LASTVALUE', 'CURRENTVALUE', 'CLOSEPRICE']);
@@ -70,10 +69,16 @@ export class MoexService {
     const idxVolume = this.findColumnIndex(marketdataColumns, ['VOLUME', 'VOLTODAY', 'QTY']);
     const idxTime = this.findColumnIndex(marketdataColumns, ['TIME', 'UPDATETIME', 'SYSTIME']);
 
+    const idxValueToday = marketdataColumns.indexOf('VALTODAY');
+    const idxValueTodayRur = marketdataColumns.indexOf('VALTODAY_RUR');
+    const idxValueTodayUsd = marketdataColumns.indexOf('VALTODAY_USD');
+    const idxNumTrades = marketdataColumns.indexOf('NUMTRADES');
+
     const idxLastChangePcnt = marketdataColumns.indexOf('LASTCHANGEPRCNT');
     const idxChange = marketdataColumns.indexOf('CHANGE');
 
     const marketMap = new Map<string, any>();
+
     for (const row of marketdataData) {
       const secid = row[idxSecId];
       if (secid) {
@@ -112,6 +117,15 @@ export class MoexService {
           max: parseFloat(row[idxMax]) || 0,
           volume: parseInt(row[idxVolume], 10) || 0,
           time: row[idxTime] || new Date().toLocaleTimeString(),
+
+          open: parseFloat(row[idxFirst]) || 0,
+          low: parseFloat(row[idxMin]) || 0,
+          high: parseFloat(row[idxMax]) || 0,
+          valueToday: parseFloat(row[idxValueToday]) || 0,
+          valueTodayRur: parseFloat(row[idxValueTodayRur]) || 0,
+          valueTodayUsd: parseFloat(row[idxValueTodayUsd]) || 0,
+          numTrades: parseInt(row[idxNumTrades], 10) || 0,
+          volumeToday: parseInt(row[idxVolume], 10) || 0,
         });
       }
     }
@@ -136,6 +150,15 @@ export class MoexService {
         lotSize: parseInt(row[idxLotSize], 10) || 0,
         prevDate: row[idxPrevDate] || '',
         status: row[idxStatus] || '',
+        prevPrice: parseFloat(row[idxPrevPrice]) || 0,
+        open: market.open ?? 0,
+        low: market.low ?? 0,
+        high: market.high ?? 0,
+        valueToday: market.valueToday ?? 0,
+        valueTodayRur: market.valueTodayRur ?? 0,
+        valueTodayUsd: market.valueTodayUsd ?? 0,
+        numTrades: market.numTrades ?? 0,
+        volumeToday: market.volumeToday ?? 0,
       };
     });
   }

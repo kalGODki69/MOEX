@@ -15,10 +15,14 @@ export interface Share {
   lotSize?: number;
   prevDate?: string;
   status?: string;
+  value?: number;
   prevPrice?: number;
   open?: number;
   low?: number;
   high?: number;
-  value?: number;
+  valueToday?: number;
+  volumeToday?: number;
   numTrades?: number;
+  valueTodayRur?: number;
+  valueTodayUsd?: number;
 }
