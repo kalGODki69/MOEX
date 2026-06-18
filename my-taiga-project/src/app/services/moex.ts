@@ -1,7 +1,8 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, map } from 'rxjs';
+import {Observable, map, of, tap} from 'rxjs';
 import { Share } from '../shared/models/share.model';
+import {catchError} from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
 export class MoexService {
@@ -169,5 +170,32 @@ export class MoexService {
       if (idx !== -1) return idx;
     }
     return -1;
+  }
+
+  getCandles(secid: string, from: string, till: string, interval: number = 24, lang: 'ru' | 'en' = 'ru'): Observable<{ date: string; value: number }[]> {
+    const url = `https://iss.moex.com/iss/engines/stock/markets/shares/securities/${secid}/candles.json?from=${from}&till=${till}&interval=${interval}&lang=${lang}`;
+    console.log('Запрос свечей:', url);
+    return this.http.get<any>(url).pipe(
+      tap(response => console.log('Ответ от API свечей:', response)),
+      map(response => {
+        const data = response.candles?.data || [];
+        const columns = response.candles?.columns || [];
+        const idxClose = columns.indexOf('close');
+        const idxTime = columns.indexOf('begin');
+        console.log('Индексы: close=', idxClose, 'begin=', idxTime);
+        if (idxClose === -1 || idxTime === -1) return [];
+        const result = data.map((row: any[]) => {
+          const date = row[idxTime].split(' ')[0];
+          const value = parseFloat(row[idxClose]);
+          return { date, value };
+        });
+        console.log('Обработанные свечи:', result);
+        return result;
+      }),
+      catchError(err => {
+        console.error('Ошибка загрузки свечей:', err);
+        return of([]);
+      })
+    );
   }
 }
