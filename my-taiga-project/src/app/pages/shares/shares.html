@@ -1,12 +1,10 @@
 <app-header [title]="(title$ | async) || 'MOEX / Акции'"></app-header>
 
-<div class="table-container">
+@if (shares$ | async; as shares) {
   <app-shares-table
-    [data]="(shares$ | async) ?? []"
+    [data]="shares"
     [clickable]="true"
   ></app-shares-table>
-
-  @if ((shares$ | async) === null) {
-    <div class="loading">Загрузка...</div>
-  }
-</div>
+} @else {
+  <div class="loading">Загрузка...</div>
+}

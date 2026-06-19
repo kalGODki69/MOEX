@@ -1,11 +1,7 @@
 <app-header [title]="(title$ | async) || 'MOEX / Индексы'"></app-header>
 
-<div class="table-container">
-  <app-shares-table
-    [data]="(indices$ | async) ?? []"
-  ></app-shares-table>
-
-  @if ((indices$ | async) === null) {
-    <div class="loading">Загрузка...</div>
-  }
-</div>
+@if (indices$ | async; as indices) {
+  <app-shares-table [data]="indices"></app-shares-table>
+} @else {
+  <div class="loading">Загрузка...</div>
+}
