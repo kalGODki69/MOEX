@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
-import { Observable, of } from 'rxjs';
+import { Observable, of, combineLatest, interval } from 'rxjs';
 import { map, startWith, switchMap, catchError } from 'rxjs/operators';
 import { SharesTableComponent } from '../../shared/ui/shares-table/shares-table';
 import { MoexService } from '../../services/moex';
@@ -29,9 +29,13 @@ export class Shares implements OnInit {
   );
 
   ngOnInit(): void {
-    this.shares$ = this.languageService.langCode$.pipe(
-      startWith(this.languageService.getCurrentLanguageCode()),
-      switchMap(lang => this.moexService.getShares(lang)),
+    const refreshInterval$ = interval(30000).pipe(startWith(0));
+
+    this.shares$ = combineLatest([
+      this.languageService.langCode$,
+      refreshInterval$
+    ]).pipe(
+      switchMap(([lang]) => this.moexService.getShares(lang)),
       catchError(err => {
         console.error('Ошибка загрузки данных MOEX', err);
         return of([]);

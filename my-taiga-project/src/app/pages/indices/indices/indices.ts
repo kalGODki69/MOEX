@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
-import { Observable, of } from 'rxjs';
+import {combineLatest, interval, Observable, of} from 'rxjs';
 import { map, startWith, switchMap, catchError } from 'rxjs/operators';
 import { SharesTableComponent } from '../../../shared/ui/shares-table/shares-table';
 import { Share } from '../../../shared/models/share.model';
@@ -29,9 +29,12 @@ export class Indices implements OnInit {
   );
 
   ngOnInit(): void {
-    this.indices$ = this.languageService.langCode$.pipe(
-      startWith(this.languageService.getCurrentLanguageCode()),
-      switchMap(lang => this.moexService.getIndices(lang)),
+    const refreshInterval$ = interval(30000).pipe(startWith(0));
+    this.indices$ = combineLatest([
+      this.languageService.langCode$,
+      refreshInterval$
+    ]).pipe(
+      switchMap(([lang]) => this.moexService.getIndices(lang)),
       catchError(err => {
         console.error('Ошибка загрузки данных MOEX индексов', err);
         return of([]);
