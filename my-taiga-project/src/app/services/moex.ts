@@ -112,7 +112,7 @@ export class MoexService {
 
         marketMap.set(secid, {
           last: isNaN(last) ? 0 : last,
-          changePercents: changePercents,
+          changePercents: isNaN(changePercents) ? 0 : changePercents,
           first: parseFloat(row[idxFirst]) || 0,
           min: parseFloat(row[idxMin]) || 0,
           max: parseFloat(row[idxMax]) || 0,

@@ -17,8 +17,8 @@
             <td tuiTd>
               <ng-container [ngSwitch]="col.key">
                 <ng-container *ngSwitchCase="'changePercents'">
-                  <span [style.color]="item.changePercents >= 0 ? 'green' : 'red'">
-                    {{ item.changePercents | number:'1.2-2' }}%
+                  <span [style.color]="(item.changePercents ?? 0) >= 0 ? 'green' : 'red'">
+                    {{ (item.changePercents ?? 0) | number:'1.2-2' }}%
                   </span>
                 </ng-container>
                 <ng-container *ngSwitchCase="'first'">
