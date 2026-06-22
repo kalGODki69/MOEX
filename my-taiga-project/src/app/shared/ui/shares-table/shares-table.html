@@ -8,7 +8,8 @@
     </tr>
     </thead>
     <tbody tuiTbody>
-      @for (item of data; track item.code) {
+    <!-- ИСПОЛЬЗУЕМ paginatedData ВМЕСТО data -->
+      @for (item of paginatedData; track item.code) {
         <tr
           [routerLink]="clickable ? ['/share', item.code] : null"
           [class.clickable]="clickable"
@@ -22,7 +23,7 @@
                   </span>
                 </ng-container>
                 <ng-container *ngSwitchCase="'first'">
-                  {{ item.first | number:'1.2-2' }}%
+                  {{ item.first | number:'1.2-2' }}
                 </ng-container>
                 <ng-container *ngSwitchCase="'last'">
                   {{ item.last | number:'1.2-2' }}
@@ -46,4 +47,30 @@
       }
     </tbody>
   </table>
+
+  @if (data.length > itemsPerPage) {
+    <div class="pagination-controls">
+      <button
+        class="pagination-btn"
+        (click)="previousPage()"
+        [disabled]="currentPage === 1"
+        [class.disabled]="currentPage === 1"
+      >
+        ← Назад
+      </button>
+
+      <span class="page-info">
+        Страница {{ currentPage }} из {{ totalPages }}
+      </span>
+
+      <button
+        class="pagination-btn"
+        (click)="nextPage()"
+        [disabled]="currentPage === totalPages"
+        [class.disabled]="currentPage === totalPages"
+      >
+        Вперед →
+      </button>
+    </div>
+  }
 }
