@@ -26,7 +26,6 @@ export class SharesTableComponent implements OnInit {
   @Input() data: Share[] = [];
   @Input() clickable: boolean = false;
 
-  // --- ПАГИНАЦИЯ ---
   currentPage: number = 1;
   itemsPerPage: number = 10;
   totalPages: number = 1;
@@ -34,20 +33,16 @@ export class SharesTableComponent implements OnInit {
   sortColumn: keyof Share | null = null;
   sortDirection: 'asc' | 'desc' = 'asc';
 
-  // Геттер, который возвращает отсортированные и обрезанные данные
   get sortedAndPaginatedData(): Share[] {
-    // 1. Сначала сортируем
     let sortedData = this.data;
     if (this.sortColumn) {
       sortedData = [...this.data].sort((a, b) => {
         const aValue = a[this.sortColumn!];
         const bValue = b[this.sortColumn!];
 
-        // Обработка null/undefined
         if (aValue === undefined || aValue === null) return 1;
         if (bValue === undefined || bValue === null) return -1;
 
-        // Сравнение строк и чисел
         if (typeof aValue === 'string' && typeof bValue === 'string') {
           return this.sortDirection === 'asc'
             ? aValue.localeCompare(bValue)
@@ -60,7 +55,6 @@ export class SharesTableComponent implements OnInit {
       });
     }
 
-    // 2. Затем пагинация
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
     const endIndex = startIndex + this.itemsPerPage;
     return sortedData.slice(startIndex, endIndex);
@@ -110,14 +104,11 @@ export class SharesTableComponent implements OnInit {
 
   sortBy(column: keyof Share) {
     if (this.sortColumn === column) {
-      // Если уже сортируем по этой колонке — меняем направление
       this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
     } else {
-      // Иначе — начинаем сортировку по новой колонке (по возрастанию)
       this.sortColumn = column;
       this.sortDirection = 'asc';
     }
-    // Сбрасываем на первую страницу при сортировке
     this.currentPage = 1;
   }
 
@@ -132,4 +123,23 @@ export class SharesTableComponent implements OnInit {
       this.currentPage++;
     }
   }
+
+  paginationLabels$: Observable<{ previous: string; next: string; pageInfo: string }> =
+    this.langService.langCode$.pipe(
+      map((lang) => {
+        if (lang === 'en') {
+          return {
+            previous: '← Previous',
+            next: 'Next →',
+            pageInfo: 'Page {{current}} of {{total}}',
+          };
+        } else {
+          return {
+            previous: '← Назад',
+            next: 'Вперед →',
+            pageInfo: 'Страница {{current}} из {{total}}',
+          };
+        }
+      })
+    );
 }

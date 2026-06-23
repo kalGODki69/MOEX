@@ -21,7 +21,6 @@
     </tr>
     </thead>
     <tbody tuiTbody>
-    <!-- ИСПОЛЬЗУЕМ sortedAndPaginatedData -->
       @for (item of sortedAndPaginatedData; track item.code) {
         <tr
           [routerLink]="clickable ? ['/share', item.code] : null"
@@ -64,27 +63,31 @@
   <!-- Пагинация -->
   @if (data.length > itemsPerPage) {
     <div class="pagination-controls">
-      <button
-        class="pagination-btn"
-        (click)="previousPage()"
-        [disabled]="currentPage === 1"
-        [class.disabled]="currentPage === 1"
-      >
-        ← Назад
-      </button>
+      @if (paginationLabels$ | async; as labels) {
+        <button
+          class="pagination-btn"
+          (click)="previousPage()"
+          [disabled]="currentPage === 1"
+          [class.disabled]="currentPage === 1"
+        >
+          {{ labels.previous }}
+        </button>
 
-      <span class="page-info">
-        Страница {{ currentPage }} из {{ totalPages }}
+        <span class="page-info">
+        {{ labels.pageInfo
+          .replace('{{current}}', currentPage.toString())
+          .replace('{{total}}', totalPages.toString()) }}
       </span>
 
-      <button
-        class="pagination-btn"
-        (click)="nextPage()"
-        [disabled]="currentPage === totalPages"
-        [class.disabled]="currentPage === totalPages"
-      >
-        Вперед →
-      </button>
+        <button
+          class="pagination-btn"
+          (click)="nextPage()"
+          [disabled]="currentPage === totalPages"
+          [class.disabled]="currentPage === totalPages"
+        >
+          {{ labels.next }}
+        </button>
+      }
     </div>
   }
 }
