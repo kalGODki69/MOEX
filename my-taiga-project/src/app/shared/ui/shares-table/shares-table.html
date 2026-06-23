@@ -3,13 +3,26 @@
     <thead>
     <tr>
       @for (col of headers; track col.key) {
-        <th tuiTh>{{ col.label }}</th>
+        <th
+          tuiTh
+          class="sortable-header"
+          (click)="sortBy(col.key)"
+        >
+          {{ col.label }}
+          <span class="sort-indicator">
+            @if (sortColumn === col.key) {
+              {{ sortDirection === 'asc' ? '▲' : '▼' }}
+            } @else {
+              <span class="sort-placeholder">⇅</span>
+            }
+          </span>
+        </th>
       }
     </tr>
     </thead>
     <tbody tuiTbody>
-    <!-- ИСПОЛЬЗУЕМ paginatedData ВМЕСТО data -->
-      @for (item of paginatedData; track item.code) {
+    <!-- ИСПОЛЬЗУЕМ sortedAndPaginatedData -->
+      @for (item of sortedAndPaginatedData; track item.code) {
         <tr
           [routerLink]="clickable ? ['/share', item.code] : null"
           [class.clickable]="clickable"
@@ -48,6 +61,7 @@
     </tbody>
   </table>
 
+  <!-- Пагинация -->
   @if (data.length > itemsPerPage) {
     <div class="pagination-controls">
       <button

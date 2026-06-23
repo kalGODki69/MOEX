@@ -26,16 +26,46 @@ export class SharesTableComponent implements OnInit {
   @Input() data: Share[] = [];
   @Input() clickable: boolean = false;
 
+  // --- ПАГИНАЦИЯ ---
   currentPage: number = 1;
-  itemsPerPage: number = 10; // Можно сделать 10, 25, 50
+  itemsPerPage: number = 10;
   totalPages: number = 1;
 
-  // Геттер, который возвращает данные для текущей страницы
-  get paginatedData(): Share[] {
+  sortColumn: keyof Share | null = null;
+  sortDirection: 'asc' | 'desc' = 'asc';
+
+  // Геттер, который возвращает отсортированные и обрезанные данные
+  get sortedAndPaginatedData(): Share[] {
+    // 1. Сначала сортируем
+    let sortedData = this.data;
+    if (this.sortColumn) {
+      sortedData = [...this.data].sort((a, b) => {
+        const aValue = a[this.sortColumn!];
+        const bValue = b[this.sortColumn!];
+
+        // Обработка null/undefined
+        if (aValue === undefined || aValue === null) return 1;
+        if (bValue === undefined || bValue === null) return -1;
+
+        // Сравнение строк и чисел
+        if (typeof aValue === 'string' && typeof bValue === 'string') {
+          return this.sortDirection === 'asc'
+            ? aValue.localeCompare(bValue)
+            : bValue.localeCompare(aValue);
+        } else {
+          return this.sortDirection === 'asc'
+            ? (aValue as number) - (bValue as number)
+            : (bValue as number) - (aValue as number);
+        }
+      });
+    }
+
+    // 2. Затем пагинация
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
     const endIndex = startIndex + this.itemsPerPage;
-    return this.data.slice(startIndex, endIndex);
+    return sortedData.slice(startIndex, endIndex);
   }
+
 
   headers$: Observable<{ key: keyof Share; label: string }[]> = this.langService.langCode$.pipe(
     map((lang) => {
@@ -68,27 +98,35 @@ export class SharesTableComponent implements OnInit {
   );
 
   ngOnInit() {
-    // Пересчитываем общее количество страниц при каждом изменении данных
     this.updateTotalPages();
   }
 
-  // Обновляем количество страниц
   private updateTotalPages() {
     this.totalPages = Math.ceil(this.data.length / this.itemsPerPage);
-    // Если текущая страница стала больше общего количества, сбрасываем на первую
     if (this.currentPage > this.totalPages && this.totalPages > 0) {
       this.currentPage = 1;
     }
   }
 
-  // Переключение на предыдущую страницу
+  sortBy(column: keyof Share) {
+    if (this.sortColumn === column) {
+      // Если уже сортируем по этой колонке — меняем направление
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      // Иначе — начинаем сортировку по новой колонке (по возрастанию)
+      this.sortColumn = column;
+      this.sortDirection = 'asc';
+    }
+    // Сбрасываем на первую страницу при сортировке
+    this.currentPage = 1;
+  }
+
   previousPage() {
     if (this.currentPage > 1) {
       this.currentPage--;
     }
   }
 
-  // Переключение на следующую страницу
   nextPage() {
     if (this.currentPage < this.totalPages) {
       this.currentPage++;
