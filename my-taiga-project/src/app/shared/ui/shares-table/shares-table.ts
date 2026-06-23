@@ -124,22 +124,17 @@ export class SharesTableComponent implements OnInit {
     }
   }
 
-  paginationLabels$: Observable<{ previous: string; next: string; pageInfo: string }> =
-    this.langService.langCode$.pipe(
-      map((lang) => {
-        if (lang === 'en') {
-          return {
-            previous: '← Previous',
-            next: 'Next →',
-            pageInfo: 'Page {{current}} of {{total}}',
-          };
-        } else {
-          return {
-            previous: '← Назад',
-            next: 'Вперед →',
-            pageInfo: 'Страница {{current}} из {{total}}',
-          };
-        }
-      })
-    );
+  paginationLabels$ = this.langService.langCode$.pipe(
+    map((lang) => {
+      if (lang === 'en') {
+        return {
+          pages: 'Pages',
+        };
+      }
+
+      return {
+        pages: 'Страниц',
+      };
+    })
+  );
 }

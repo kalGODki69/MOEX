@@ -60,34 +60,34 @@
     </tbody>
   </table>
 
-  <!-- Пагинация -->
   @if (data.length > itemsPerPage) {
-    <div class="pagination-controls">
+    @if (data.length > itemsPerPage) {
       @if (paginationLabels$ | async; as labels) {
-        <button
-          class="pagination-btn"
-          (click)="previousPage()"
-          [disabled]="currentPage === 1"
-          [class.disabled]="currentPage === 1"
-        >
-          {{ labels.previous }}
-        </button>
-
-        <span class="page-info">
-        {{ labels.pageInfo
-          .replace('{{current}}', currentPage.toString())
-          .replace('{{total}}', totalPages.toString()) }}
-      </span>
-
-        <button
-          class="pagination-btn"
-          (click)="nextPage()"
-          [disabled]="currentPage === totalPages"
-          [class.disabled]="currentPage === totalPages"
-        >
-          {{ labels.next }}
-        </button>
+        <div class="pagination">
+          <div class="pagination-info">
+            {{ labels.pages }} {{ totalPages }}
+          </div>
+          <div class="pagination-navigation">
+            <button
+              class="pagination-arrow"
+              (click)="previousPage()"
+              [disabled]="currentPage === 1"
+            >
+              ‹
+            </button>
+            <span class="current-page">
+          {{ currentPage }}
+        </span>
+            <button
+              class="pagination-arrow"
+              (click)="nextPage()"
+              [disabled]="currentPage === totalPages"
+            >
+              ›
+            </button>
+          </div>
+        </div>
       }
-    </div>
+    }
   }
 }
