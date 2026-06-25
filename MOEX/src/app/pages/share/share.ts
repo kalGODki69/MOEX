@@ -22,8 +22,17 @@ export class Share implements OnInit {
   private route = inject(ActivatedRoute);
 
   instrument$!: Observable<ShareInterface | null>;
-  candles$!: Observable<{ date: string; value: number }[]>;
+  candles$!: Observable<{ date: string; open: number; high: number; low: number; close: number; volume: number }[]>;
   chartOptions$!: Observable<EChartsOption | null>;
+
+  stats$!: Observable<{
+    open: number;
+    high: number;
+    low: number;
+    close: number;
+    changePercent: number;
+    volume: number;
+  } | null>;
 
   private refresh$ = combineLatest([
     this.languageService.langCode$,
@@ -161,19 +170,15 @@ export class Share implements OnInit {
 
     this.stats$ = this.candles$.pipe(
       map((data) => {
-        if (!data || data.length === 0) {
-          return null;
-        }
+        if (!data || data.length === 0) return null;
 
-        const values = data.map(x => x.value);
-
-        const open = values[0];
-        const close = values[values.length - 1];
-        const high = Math.max(...values);
-        const low = Math.min(...values);
-
-        const changePercent =
-          open !== 0 ? ((close - open) / open) * 100 : 0;
+        const closes = data.map(c => c.close);
+        const open = closes[0];
+        const close = closes[closes.length - 1];
+        const high = Math.max(...closes);
+        const low = Math.min(...closes);
+        const changePercent = open !== 0 ? ((close - open) / open) * 100 : 0;
+        const totalVolume = data.reduce((sum, c) => sum + c.volume, 0);
 
         return {
           open,
@@ -181,7 +186,7 @@ export class Share implements OnInit {
           low,
           close,
           changePercent,
-          volume: 0
+          volume: totalVolume,
         };
       })
     );
@@ -191,50 +196,133 @@ export class Share implements OnInit {
       this.languageService.langCode$,
     ]).pipe(
       map(([data, lang]) => {
-        if (!data || data.length === 0) {
-          return null;
-        }
-        const dates = data.map((item) => item.date);
-        const values = data.map((item) => item.value);
+        if (!data || data.length === 0) return null;
+
+        const dates = data.map(item => item.date);
+        const prices = data.map(item => item.close);
+        const volumes = data.map(item => item.volume);
+        const totalVolume = volumes.reduce((sum, v) => sum + v, 0);
+
+        const barData = data.map((item, index) => {
+          let color = '#6d89f9';
+          if (index > 0) {
+            const prevClose = data[index - 1].close;
+            const currClose = item.close;
+            color = currClose >= prevClose ? '#00a651' : '#e53935';
+          } else {
+            color = item.close >= item.open ? '#00a651' : '#e53935';
+          }
+          return {
+            value: item.volume,
+            itemStyle: { color }
+          };
+        });
+
         const priceLabel = lang === 'ru' ? 'Цена' : 'Price';
+        const volumeLabel = lang === 'ru' ? 'Объём' : 'Volume';
+        const volumeText = lang === 'ru' ? 'Объем' : 'Volume';
 
         return {
           tooltip: {
             trigger: 'axis',
-            formatter: (params: any) =>
-              `${params[0].axisValue}<br/>${priceLabel}: ${params[0].value}`,
+            axisPointer: { type: 'cross' },
+            formatter: (params: any) => {
+              let res = params[0].axisValue + '<br/>';
+              params.forEach((p: any) => {
+                if (p.seriesName) {
+                  res += `${p.seriesName}: ${p.value}<br/>`;
+                }
+              });
+              return res;
+            }
           },
-          grid: {
-            top: 20,
-            left: '2%',
-            right: '5%',
-            bottom: '5%',
-            containLabel: true
-          },
-          xAxis: {
-            type: 'category',
-            data: dates,
-            boundaryGap: false,
-            axisLabel: { show: false },
-            splitLine: { show: true },
-          },
-          yAxis: {
-            type: 'value',
-            scale: true,
-            splitLine: { show: true },
-            position: 'right',
-          },
+          graphic: [
+            {
+              type: 'text',
+              left: '5%',
+              top: '68%',
+              style: {
+                text: `${volumeText}: ${totalVolume.toLocaleString()}`,
+                fill: '#888',
+                fontSize: 14,
+                fontWeight: 'bold'
+              }
+            }
+          ],
+          grid: [
+            { left: '5%', right: '5%', top: '10%', height: '50%' },
+            { left: '5%', right: '5%', top: '67%', height: '25%' }
+          ],
+          xAxis: [
+            {
+              type: 'category',
+              data: dates,
+              gridIndex: 0,
+              axisLabel: { show: false },
+              splitLine: { show: false }
+            },
+            {
+              type: 'category',
+              data: dates,
+              gridIndex: 1,
+              axisLabel: {
+                rotate: 30,
+                interval: 'auto',
+                fontSize: 10,
+                color: '#888',
+                formatter: (value: string) => {
+                  const date = new Date(value);
+                  const day = date.getDate();
+                  const monthNames: Record<'ru' | 'en', string[]> = {
+                    ru: ['янв', 'фев', 'мар', 'апр', 'май', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'],
+                    en: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+                  };
+                  const month = monthNames[lang as 'ru' | 'en']?.[date.getMonth()] || '';
+                  return `${day} ${month}`;
+                }
+              },
+              splitLine: { show: false }
+            }
+          ],
+          yAxis: [
+            {
+              type: 'value',
+              gridIndex: 0,
+              scale: true,
+              splitLine: { show: true },
+              position: 'right'
+            },
+            {
+              type: 'value',
+              gridIndex: 1,
+              scale: true,
+              splitLine: { show: true },
+              position: 'right',
+              max: (value: { max: number, min: number }) => value.max * 1.1
+            }
+          ],
           series: [
             {
+              name: priceLabel,
               type: 'line',
-              data: values,
+              data: prices,
               smooth: true,
               lineStyle: { color: '#6d89f9', width: 2 },
               areaStyle: { color: '#0743d6', opacity: 0.1 },
               symbol: 'circle',
               symbolSize: 4,
+              xAxisIndex: 0,
+              yAxisIndex: 0
             },
-          ],
+            {
+              name: volumeLabel,
+              type: 'bar',
+              data: barData,
+              xAxisIndex: 1,
+              yAxisIndex: 1,
+              barWidth: '80%'
+            }
+          ]
         };
       })
     );
@@ -251,13 +339,4 @@ export class Share implements OnInit {
       })
     );
   }
-
-  stats$!: Observable<{
-    open: number;
-    high: number;
-    low: number;
-    close: number;
-    changePercent: number;
-    volume: number;
-  } | null>;
 }

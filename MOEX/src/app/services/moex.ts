@@ -172,25 +172,35 @@ export class MoexService {
     return -1;
   }
 
-  getCandles(secid: string, from: string, till: string, interval: number = 24, lang: 'ru' | 'en' = 'ru'): Observable<{ date: string; value: number }[]> {
+  getCandles(
+    secid: string,
+    from: string,
+    till: string,
+    interval: number = 24,
+    lang: 'ru' | 'en' = 'ru'
+  ): Observable<{ date: string; open: number; high: number; low: number; close: number; volume: number }[]> {
     const url = `https://iss.moex.com/iss/engines/stock/markets/shares/securities/${secid}/candles.json?from=${from}&till=${till}&interval=${interval}&lang=${lang}`;
-    console.log('Запрос свечей:', url);
     return this.http.get<any>(url).pipe(
-      tap(response => console.log('Ответ от API свечей:', response)),
       map(response => {
         const data = response.candles?.data || [];
         const columns = response.candles?.columns || [];
+        const idxOpen = columns.indexOf('open');
+        const idxHigh = columns.indexOf('high');
+        const idxLow = columns.indexOf('low');
         const idxClose = columns.indexOf('close');
+        const idxVolume = columns.indexOf('volume');
         const idxTime = columns.indexOf('begin');
-        console.log('Индексы: close=', idxClose, 'begin=', idxTime);
-        if (idxClose === -1 || idxTime === -1) return [];
-        const result = data.map((row: any[]) => {
-          const date = row[idxTime].split(' ')[0];
-          const value = parseFloat(row[idxClose]);
-          return { date, value };
-        });
-        console.log('Обработанные свечи:', result);
-        return result;
+        if (idxOpen === -1 || idxHigh === -1 || idxLow === -1 || idxClose === -1 || idxVolume === -1 || idxTime === -1) {
+          return [];
+        }
+        return data.map((row: any[]) => ({
+          date: row[idxTime].split(' ')[0],
+          open: parseFloat(row[idxOpen]),
+          high: parseFloat(row[idxHigh]),
+          low: parseFloat(row[idxLow]),
+          close: parseFloat(row[idxClose]),
+          volume: parseInt(row[idxVolume], 10) || 0
+        }));
       }),
       catchError(err => {
         console.error('Ошибка загрузки свечей:', err);
