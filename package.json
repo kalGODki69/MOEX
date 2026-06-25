@@ -1,7 +1,0 @@
-{
-  "dependencies": {
-    "date-fns": "^4.4.0",
-    "echarts": "^6.1.0",
-    "ngx-echarts": "^21.0.0"
-  }
-}
