@@ -28,31 +28,31 @@
         >
           @for (col of headers; track col.key) {
             <td tuiTd>
-              <ng-container [ngSwitch]="col.key">
-                <ng-container *ngSwitchCase="'changePercents'">
+              @switch (col.key) {
+                @case ('changePercents') {
                   <span [style.color]="(item.changePercents ?? 0) >= 0 ? 'green' : 'red'">
-                    {{ (item.changePercents ?? 0) | number:'1.2-2' }}%
-                  </span>
-                </ng-container>
-                <ng-container *ngSwitchCase="'first'">
+      {{ (item.changePercents ?? 0) | number:'1.2-2' }}%
+    </span>
+                }
+                @case ('first') {
                   {{ item.first | number:'1.2-2' }}
-                </ng-container>
-                <ng-container *ngSwitchCase="'last'">
+                }
+                @case ('last') {
                   {{ item.last | number:'1.2-2' }}
-                </ng-container>
-                <ng-container *ngSwitchCase="'min'">
+                }
+                @case ('min') {
                   {{ item.min | number:'1.2-2' }}
-                </ng-container>
-                <ng-container *ngSwitchCase="'max'">
+                }
+                @case ('max') {
                   {{ item.max | number:'1.2-2' }}
-                </ng-container>
-                <ng-container *ngSwitchCase="'volume'">
+                }
+                @case ('volume') {
                   {{ item.volume | number }}
-                </ng-container>
-                <ng-container *ngSwitchDefault>
+                }
+                @default {
                   {{ item[col.key] }}
-                </ng-container>
-              </ng-container>
+                }
+              }
             </td>
           }
         </tr>
@@ -61,33 +61,31 @@
   </table>
 
   @if (data.length > itemsPerPage) {
-    @if (data.length > itemsPerPage) {
-      @if (paginationLabels$ | async; as labels) {
-        <div class="pagination">
-          <div class="pagination-info">
-            {{ labels.pages }} {{ totalPages }}
-          </div>
-          <div class="pagination-navigation">
-            <button
-              class="pagination-arrow"
-              (click)="previousPage()"
-              [disabled]="currentPage === 1"
-            >
-              ‹
-            </button>
-            <span class="current-page">
-          {{ currentPage }}
-        </span>
-            <button
-              class="pagination-arrow"
-              (click)="nextPage()"
-              [disabled]="currentPage === totalPages"
-            >
-              ›
-            </button>
-          </div>
+    @if (paginationLabels$ | async; as labels) {
+      <div class="pagination">
+        <div class="pagination-info">
+          {{ labels.pages }} {{ totalPages }}
         </div>
-      }
+        <div class="pagination-navigation">
+          <button
+            class="pagination-arrow"
+            (click)="previousPage()"
+            [disabled]="currentPage === 1"
+          >
+            ‹
+          </button>
+          <span class="current-page">
+            {{ currentPage }}
+          </span>
+          <button
+            class="pagination-arrow"
+            (click)="nextPage()"
+            [disabled]="currentPage === totalPages"
+          >
+            ›
+          </button>
+        </div>
+      </div>
     }
   }
 }
