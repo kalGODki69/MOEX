@@ -1,0 +1,72 @@
+{
+  "shares": {
+    "title": "MOEX / Акции"
+  },
+  "indices": {
+    "title": "MOEX / Индексы"
+  },
+  "share": {
+    "params": {
+      "code": "Код ценной бумаги",
+      "isin": "ISIN код",
+      "boardId": "ID режима торгов",
+      "listLevel": "Уровень листинга",
+      "boardName": "Режим торгов",
+      "lotSize": "Лотность",
+      "prevDate": "Дата начала торгов",
+      "status": "Для квал. инвесторов"
+    },
+    "tradeData": {
+      "title": "Торговые данные",
+      "prevPrice": "Цена закрытия",
+      "open": "Цена первой сделки",
+      "low": "Минимальная цена",
+      "high": "Максимальная цена",
+      "valueToday": "Объем сделок за день",
+      "valueTodayRur": "Объем сделок для рыночной цены (2), руб.",
+      "volumeToday": "Объем сделок за день, шт.",
+      "valueTodayUsd": "Объем сделок для рыночной цены (3), руб."
+    },
+    "intervalLabels": [
+      { "value": 1, "label": "1 минута" },
+      { "value": 5, "label": "5 минут" },
+      { "value": 30, "label": "30 минут" },
+      { "value": 60, "label": "1 час" },
+      { "value": 1440, "label": "1 день" }
+    ],
+    "statsLabels": {
+      "open": "Отк.",
+      "high": "Макс.",
+      "low": "Мин.",
+      "close": "Закр.",
+      "change": "Изм.",
+      "volume": "Объем"
+    },
+    "messages": {
+      "loading": "Загрузка...",
+      "loadingChart": "Загрузка графика...",
+      "noData": "Нет данных за выбранный период",
+      "loadingData": "Загрузка данных..."
+    },
+    "type": {
+      "shares": "Акции",
+      "indices": "Индексы"
+    }
+  },
+  "shareTable": {
+    "code": "Код",
+    "name": "Наименование",
+    "last": "Последняя",
+    "changePercents": "Изменение, %",
+    "first": "Первая",
+    "min": "Мин.",
+    "max": "Макс.",
+    "volume": "Объем",
+    "time": "Время",
+    "pages": "Страниц"
+  },
+  "header": {
+    "navShares": "Акции",
+    "navIndices": "Индексы"
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "shares": {
+    "title": "MOEX / Shares"
+  },
+  "indices": {
+    "title": "MOEX / Indices"
+  },
+  "share": {
+    "params": {
+      "code": "Security code",
+      "isin": "ISIN code",
+      "boardId": "Trading board ID",
+      "listLevel": "Listing level",
+      "boardName": "Trading mode",
+      "lotSize": "Lot size",
+      "prevDate": "Start trading date",
+      "status": "For qualified investors"
+    },
+    "tradeData": {
+      "title": "Trading data",
+      "prevPrice": "Close price",
+      "open": "First deal price",
+      "low": "Min price",
+      "high": "Max price",
+      "valueToday": "Daily turnover",
+      "valueTodayRur": "Daily turnover for market price (2), RUB",
+      "volumeToday": "Daily volume, pcs",
+      "valueTodayUsd": "Daily turnover for market price (3), RUB"
+    },
+    "intervalLabels": [
+      { "value": 1, "label": "1 minute" },
+      { "value": 5, "label": "5 minutes" },
+      { "value": 30, "label": "30 minutes" },
+      { "value": 60, "label": "1 hour" },
+      { "value": 1440, "label": "1 day" }
+    ],
+    "statsLabels": {
+      "open": "Open",
+      "high": "High",
+      "low": "Low",
+      "close": "Close",
+      "change": "Change",
+      "volume": "Volume"
+    },
+    "messages": {
+      "loading": "Loading...",
+      "loadingChart": "Loading chart...",
+      "noData": "No data for the selected period",
+      "loadingData": "Loading data..."
+    },
+    "type": {
+      "shares": "Shares",
+      "indices": "Indices"
+    }
+  },
+  "shareTable": {
+    "code": "Ticker",
+    "name": "Name",
+    "last": "Last",
+    "changePercents": "Change, %",
+    "first": "Open",
+    "min": "Min.",
+    "max": "Max.",
+    "volume": "Volume",
+    "time": "Time",
+    "pages": "Pages"
+  },
+  "header": {
+    "navShares": "Shares",
+    "navIndices": "Indices"
+  }
+}
