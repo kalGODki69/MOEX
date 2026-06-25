@@ -312,7 +312,18 @@ export class Share implements OnInit {
               symbol: 'circle',
               symbolSize: 4,
               xAxisIndex: 0,
-              yAxisIndex: 0
+              yAxisIndex: 0,
+              markLine: prices.length > 0 ? {
+                silent: true,
+                symbol: 'none',
+                lineStyle: {
+                  color: 'rgb(52 193 126)',
+                  type: 'dashed',
+                  width: 2
+                },
+                label: { show: false },
+                data: [{ yAxis: prices[prices.length - 1] }]
+              } : undefined
             },
             {
               name: volumeLabel,
