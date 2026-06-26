@@ -17,28 +17,29 @@
                 <div class="chart-stats">
                     <div class="stat-item">
                         <span class="stat-label">{{ 'share.statsLabels.open' | transloco }}</span>
-                        <span class="stat-value">{{ stats.open | number:'1.2-2' }}</span>
+                        <span tuiBadge size="s">{{ stats.open | number:'1.2-2' }}</span>
                     </div>
 
                     <div class="stat-item">
                         <span class="stat-label">{{ 'share.statsLabels.high' | transloco }}</span>
-                        <span class="stat-value">{{ stats.high | number:'1.2-2' }}</span>
+                        <span tuiBadge size="s">{{ stats.high | number:'1.2-2' }}</span>
                     </div>
 
                     <div class="stat-item">
                         <span class="stat-label">{{ 'share.statsLabels.low' | transloco }}</span>
-                        <span class="stat-value">{{ stats.low | number:'1.2-2' }}</span>
+                        <span tuiBadge size="s">{{ stats.low | number:'1.2-2' }}</span>
                     </div>
 
                     <div class="stat-item">
                         <span class="stat-label">{{ 'share.statsLabels.close' | transloco }}</span>
-                        <span class="stat-value">{{ stats.close | number:'1.2-2' }}</span>
+                        <span tuiBadge size="s">{{ stats.close | number:'1.2-2' }}</span>
                     </div>
 
                     <div class="stat-item">
                         <span class="stat-label">{{ 'share.statsLabels.change' | transloco }}</span>
                         <span
-                                class="stat-value"
+                                tuiBadge
+                                size="s"
                                 [class.positive]="stats.changePercent > 0"
                                 [class.negative]="stats.changePercent < 0"
                         >
@@ -48,7 +49,7 @@
 
                     <div class="stat-item">
                         <span class="stat-label">{{ 'share.statsLabels.volume' | transloco }}</span>
-                        <span class="stat-value">{{ stats.volume | number }}</span>
+                        <span tuiBadge size="s">{{ stats.volume | number }}</span>
                     </div>
                 </div>
             }

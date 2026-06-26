@@ -13,7 +13,7 @@ import { EChartsOption } from 'echarts';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { InstrumentParamsComponent } from '../../shared/ui/instrument-params/instrument-params';
 import { TradeDataComponent } from '../../shared/ui/trade-data/trade-data';
-import { TuiSegmented } from '@taiga-ui/kit';
+import { TuiSegmented, TuiBadge } from '@taiga-ui/kit';
 import { TuiLoader } from '@taiga-ui/core';
 
 @Component({
@@ -29,6 +29,7 @@ import { TuiLoader } from '@taiga-ui/core';
     TradeDataComponent,
     TuiSegmented,
     TuiLoader,
+    TuiBadge,
   ],
   templateUrl: './share.html',
   styleUrl: './share.less',
