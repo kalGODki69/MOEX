@@ -2,7 +2,7 @@ import { Component, Input, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { TuiTitle } from '@taiga-ui/core';
-import { TuiSegmented } from '@taiga-ui/kit';
+import { TuiSegmented, TuiTabs, TuiTab } from '@taiga-ui/kit';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 
 @Component({
@@ -13,6 +13,8 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
     RouterModule,
     TuiTitle,
     TuiSegmented,
+    TuiTabs,
+    TuiTab,
     TranslocoPipe,
   ],
   templateUrl: './header.html',
