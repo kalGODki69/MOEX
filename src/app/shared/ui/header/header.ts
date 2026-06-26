@@ -1,9 +1,8 @@
-import { Component, Input, inject, DestroyRef } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { ReactiveFormsModule, FormControl, FormGroup } from '@angular/forms';
-import { TuiTitle, TuiRadio } from '@taiga-ui/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { TuiTitle } from '@taiga-ui/core';
+import { TuiSegmented } from '@taiga-ui/kit';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 
 @Component({
@@ -12,9 +11,8 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
   imports: [
     CommonModule,
     RouterModule,
-    ReactiveFormsModule,
     TuiTitle,
-    TuiRadio,
+    TuiSegmented,
     TranslocoPipe,
   ],
   templateUrl: './header.html',
@@ -24,23 +22,14 @@ export class Header {
   @Input() title = '';
 
   private readonly transloco = inject(TranslocoService);
-  private readonly destroyRef = inject(DestroyRef);
 
-  readonly form = new FormGroup({
-    choice: new FormControl<'ru' | 'en'>('ru'),
-  });
+  readonly languages = ['en', 'ru'] as const;
 
-  constructor() {
-    this.form.controls.choice.setValue(
-        this.transloco.getActiveLang() as 'ru' | 'en'
-    );
+  get activeLangIndex(): number {
+    return this.transloco.getActiveLang() === 'en' ? 0 : 1;
+  }
 
-    this.form.controls.choice.valueChanges
-        .pipe(takeUntilDestroyed(this.destroyRef))
-        .subscribe((lang) => {
-          if (lang) {
-            this.transloco.setActiveLang(lang);
-          }
-        });
+  onLangChange(index: number): void {
+    this.transloco.setActiveLang(this.languages[index]);
   }
 }
