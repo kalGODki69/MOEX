@@ -27,13 +27,13 @@
       "volumeToday": "Daily volume, pcs",
       "valueTodayUsd": "Daily turnover for market price (3), RUB"
     },
-    "intervalLabels": [
-      { "value": 1, "label": "1 minute" },
-      { "value": 5, "label": "5 minutes" },
-      { "value": 30, "label": "30 minutes" },
-      { "value": 60, "label": "1 hour" },
-      { "value": 1440, "label": "1 day" }
-    ],
+    "intervalLabels": {
+      "1m": "1 minute",
+      "5m": "5 minutes",
+      "30m": "30 minutes",
+      "60m": "1 hour",
+      "1440m": "1 day"
+    },
     "statsLabels": {
       "open": "Open",
       "high": "High",

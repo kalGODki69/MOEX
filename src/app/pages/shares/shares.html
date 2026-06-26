@@ -1,10 +1,12 @@
-<app-header [title]="(title$ | async) || 'MOEX / Акции'"></app-header>
+<app-header [title]="(title$ | async) || ('shares.title' | transloco)"></app-header>
 
 @if (shares$ | async; as shares) {
-  <app-shares-table
-    [data]="shares"
-    [clickable]="true"
-  ></app-shares-table>
+    <app-shares-table
+            [data]="shares"
+            [clickable]="true"
+    ></app-shares-table>
 } @else {
-  <div class="loading">Загрузка...</div>
+    <div class="loading">
+        {{ 'share.messages.loading' | transloco }}
+    </div>
 }

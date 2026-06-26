@@ -1,19 +1,35 @@
 <div class="header-row">
-  <h2 tuiTitle="l">{{ title }}</h2>
-  <div [formGroup]="form" class="radio-group">
-    <label tuiLabel>
-      <input tuiRadio type="radio" formControlName="choice" value="en" /> EN
-    </label>
-    <label tuiLabel>
-      <input tuiRadio type="radio" formControlName="choice" value="ru" /> RU
-    </label>
-  </div>
+    <h2 tuiTitle="l">{{ title }}</h2>
+
+    <div [formGroup]="form" class="radio-group">
+        <label tuiLabel>
+            <input
+                    tuiRadio
+                    type="radio"
+                    formControlName="choice"
+                    value="en"
+            />
+            EN
+        </label>
+
+        <label tuiLabel>
+            <input
+                    tuiRadio
+                    type="radio"
+                    formControlName="choice"
+                    value="ru"
+            />
+            RU
+        </label>
+    </div>
 </div>
 
-@if (navLinks$ | async; as navLinks) {
-  <nav class="sub-nav">
-    @for (item of navLinks; track item.link) {
-      <a [routerLink]="item.link" routerLinkActive="active">{{ item.label }}</a>
-    }
-  </nav>
-}
+<nav class="sub-nav">
+    <a routerLink="/shares" routerLinkActive="active">
+        {{ 'header.navShares' | transloco }}
+    </a>
+
+    <a routerLink="/indices" routerLinkActive="active">
+        {{ 'header.navIndices' | transloco }}
+    </a>
+</nav>

@@ -1,152 +1,182 @@
-<app-header [title]="(title$ | async) || 'MOEX / Акции'"></app-header>
+<app-header [title]="(title$ | async) || ('shares.title' | transloco)"></app-header>
 
 <div class="content-wrapper">
 
-  <div class="left-column">
-    <div class="interval-controls">
-      @for (item of (translations$ | async)?.intervalLabels; track item.value) {
-        <button (click)="setInterval(item.value)" [class.active]="(interval$ | async) === item.value">
-          {{ item.label }}
-        </button>
-      }
-    </div>
+    <div class="left-column">
+        <div class="interval-controls">
+            @for (item of intervalLabels; track item.value) {
+                <button
+                        (click)="setInterval(item.value)"
+                        [class.active]="(interval$ | async) === item.value"
+                >
+                    {{ item.labelKey | transloco }}
+                </button>
+            }
+        </div>
 
+        <div class="chart-wrapper">
+            @if (stats$ | async; as stats) {
+                <div class="chart-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">{{ 'share.statsLabels.open' | transloco }}</span>
+                        <span class="stat-value">{{ stats.open | number:'1.2-2' }}</span>
+                    </div>
 
-    <div class="chart-wrapper">
-      @if (stats$ | async; as stats) {
-        <div class="chart-stats">
-          <div class="stat-item">
-            <span class="stat-label">{{ (translations$ | async)?.statsLabels?.open }}</span>
-            <span class="stat-value">{{ stats.open | number:'1.2-2' }}</span>
-          </div>
+                    <div class="stat-item">
+                        <span class="stat-label">{{ 'share.statsLabels.high' | transloco }}</span>
+                        <span class="stat-value">{{ stats.high | number:'1.2-2' }}</span>
+                    </div>
 
-          <div class="stat-item">
-            <span class="stat-label">{{ (translations$ | async)?.statsLabels?.high }}</span>
-            <span class="stat-value">{{ stats.high | number:'1.2-2' }}</span>
-          </div>
+                    <div class="stat-item">
+                        <span class="stat-label">{{ 'share.statsLabels.low' | transloco }}</span>
+                        <span class="stat-value">{{ stats.low | number:'1.2-2' }}</span>
+                    </div>
 
-          <div class="stat-item">
-            <span class="stat-label">{{ (translations$ | async)?.statsLabels?.low }}</span>
-            <span class="stat-value">{{ stats.low | number:'1.2-2' }}</span>
-          </div>
+                    <div class="stat-item">
+                        <span class="stat-label">{{ 'share.statsLabels.close' | transloco }}</span>
+                        <span class="stat-value">{{ stats.close | number:'1.2-2' }}</span>
+                    </div>
 
-          <div class="stat-item">
-            <span class="stat-label">{{ (translations$ | async)?.statsLabels?.close }}</span>
-            <span class="stat-value">{{ stats.close | number:'1.2-2' }}</span>
-          </div>
-
-          <div class="stat-item">
-            <span class="stat-label">{{ (translations$ | async)?.statsLabels?.change }}</span>
-            <span
-              class="stat-value"
-              [class.positive]="stats.changePercent > 0"
-              [class.negative]="stats.changePercent < 0"
-            >
+                    <div class="stat-item">
+                        <span class="stat-label">{{ 'share.statsLabels.change' | transloco }}</span>
+                        <span
+                                class="stat-value"
+                                [class.positive]="stats.changePercent > 0"
+                                [class.negative]="stats.changePercent < 0"
+                        >
               {{ stats.changePercent | number:'1.2-2' }}%
             </span>
-          </div>
+                    </div>
 
-          <div class="stat-item">
-            <span class="stat-label">{{ (translations$ | async)?.statsLabels?.volume }}</span>
-            <span class="stat-value">{{ stats.volume | number }}</span>
-          </div>
-        </div>
-      }
-
-      <div class="chart-area">
-        @if (candles$ | async; as candles) {
-          @if (candles.length === 0) {
-            <div class="chart-placeholder">Нет данных за выбранный период</div>
-          } @else {
-            @if (chartOptions$ | async; as options) {
-              <div echarts [options]="options" class="chart-container"></div>
+                    <div class="stat-item">
+                        <span class="stat-label">{{ 'share.statsLabels.volume' | transloco }}</span>
+                        <span class="stat-value">{{ stats.volume | number }}</span>
+                    </div>
+                </div>
             }
-          }
-        } @else {
-          <div class="chart-placeholder">Загрузка графика...</div>
-        }
-      </div>
+
+            <div class="chart-area">
+                @if (candles$ | async; as candles) {
+                    @if (candles.length === 0) {
+                        <div class="chart-placeholder">
+                            {{ 'share.messages.noData' | transloco }}
+                        </div>
+                    } @else {
+                        @if (chartOptions$ | async; as options) {
+                            <div echarts [options]="options" class="chart-container"></div>
+                        }
+                    }
+                } @else {
+                    <div class="chart-placeholder">
+                        {{ 'share.messages.loadingChart' | transloco }}
+                    </div>
+                }
+            </div>
+        </div>
     </div>
-  </div>
 
-  <div class="params-area">
-    @if (instrument$ | async; as share) {
-      <div class="params-block">
-        <div class="params-grid">
-          <div class="param-item">
-            <span class="param-label">{{ (translations$ | async)?.params?.code }}</span>
-            <span class="param-value">{{ share.code }}</span>
-          </div>
-          <div class="param-item">
-            <span class="param-label">{{ (translations$ | async)?.params?.isin }}</span>
-            <span class="param-value">{{ share.isin || '-' }}</span>
-          </div>
-          <div class="param-item">
-            <span class="param-label">{{ (translations$ | async)?.params?.boardId }}</span>
-            <span class="param-value">{{ share.boardId || '-' }}</span>
-          </div>
-          <div class="param-item">
-            <span class="param-label">{{ (translations$ | async)?.params?.listLevel }}</span>
-            <span class="param-value">{{ share.listLevel || '-' }}</span>
-          </div>
-          <div class="param-item">
-            <span class="param-label">{{ (translations$ | async)?.params?.boardName }}</span>
-            <span class="param-value">{{ share.boardName || '-' }}</span>
-          </div>
-          <div class="param-item">
-            <span class="param-label">{{ (translations$ | async)?.params?.lotSize }}</span>
-            <span class="param-value">{{ share.lotSize || '-' }}</span>
-          </div>
-          <div class="param-item">
-            <span class="param-label">{{ (translations$ | async)?.params?.prevDate }}</span>
-            <span class="param-value">{{ share.prevDate || '-' }}</span>
-          </div>
-          <div class="param-item">
-            <span class="param-label">{{ (translations$ | async)?.params?.status }}</span>
-            <span class="param-value">{{ share.status === 'N' ? '×' : '✓' }}</span>
-          </div>
-        </div>
-      </div>
+    <div class="params-area">
+        @if (instrument$ | async; as share) {
 
-      <div class="trade-data-block">
-        <h3 class="trade-data-title">{{ (translations$ | async)?.tradeData?.title }}</h3>
-        <div class="trade-data-grid">
-          <div class="trade-item">
-            <span class="trade-label">{{ (translations$ | async)?.tradeData?.prevPrice }}</span>
-            <span class="trade-value">{{ share.prevPrice | number:'1.2-2' }} ₽</span>
-          </div>
-          <div class="trade-item">
-            <span class="trade-label">{{ (translations$ | async)?.tradeData?.open }}</span>
-            <span class="trade-value">{{ share.open | number:'1.2-2' }} ₽</span>
-          </div>
-          <div class="trade-item">
-            <span class="trade-label">{{ (translations$ | async)?.tradeData?.low }}</span>
-            <span class="trade-value">{{ share.low | number:'1.2-2' }} ₽</span>
-          </div>
-          <div class="trade-item">
-            <span class="trade-label">{{ (translations$ | async)?.tradeData?.high }}</span>
-            <span class="trade-value">{{ share.high | number:'1.2-2' }} ₽</span>
-          </div>
-          <div class="trade-item">
-            <span class="trade-label">{{ (translations$ | async)?.tradeData?.valueToday }}</span>
-            <span class="trade-value">{{ share.valueToday | number:'1.2-2' }} ₽</span>
-          </div>
-          <div class="trade-item">
-            <span class="trade-label">{{ (translations$ | async)?.tradeData?.valueTodayRur }}</span>
-            <span class="trade-value">{{ share.valueTodayRur | number:'1.2-2' }} ₽</span>
-          </div>
-          <div class="trade-item">
-            <span class="trade-label">{{ (translations$ | async)?.tradeData?.volumeToday }}</span>
-            <span class="trade-value">{{ share.volumeToday | number }}</span>
-          </div>
-          <div class="trade-item">
-            <span class="trade-label">{{ (translations$ | async)?.tradeData?.valueTodayUsd }}</span>
-            <span class="trade-value">{{ share.valueTodayUsd | number:'1.2-2' }} ₽</span>
-          </div>
-        </div>
-      </div>
-    } @else {
-      <p>Загрузка данных...</p>
-    }
-  </div>
+            <div class="params-block">
+                <div class="params-grid">
+
+                    <div class="param-item">
+                        <span class="param-label">{{ 'share.params.code' | transloco }}</span>
+                        <span class="param-value">{{ share.code }}</span>
+                    </div>
+
+                    <div class="param-item">
+                        <span class="param-label">{{ 'share.params.isin' | transloco }}</span>
+                        <span class="param-value">{{ share.isin || '-' }}</span>
+                    </div>
+
+                    <div class="param-item">
+                        <span class="param-label">{{ 'share.params.boardId' | transloco }}</span>
+                        <span class="param-value">{{ share.boardId || '-' }}</span>
+                    </div>
+
+                    <div class="param-item">
+                        <span class="param-label">{{ 'share.params.listLevel' | transloco }}</span>
+                        <span class="param-value">{{ share.listLevel || '-' }}</span>
+                    </div>
+
+                    <div class="param-item">
+                        <span class="param-label">{{ 'share.params.boardName' | transloco }}</span>
+                        <span class="param-value">{{ share.boardName || '-' }}</span>
+                    </div>
+
+                    <div class="param-item">
+                        <span class="param-label">{{ 'share.params.lotSize' | transloco }}</span>
+                        <span class="param-value">{{ share.lotSize || '-' }}</span>
+                    </div>
+
+                    <div class="param-item">
+                        <span class="param-label">{{ 'share.params.prevDate' | transloco }}</span>
+                        <span class="param-value">{{ share.prevDate || '-' }}</span>
+                    </div>
+
+                    <div class="param-item">
+                        <span class="param-label">{{ 'share.params.status' | transloco }}</span>
+                        <span class="param-value">{{ share.status === 'N' ? '×' : '✓' }}</span>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="trade-data-block">
+                <h3 class="trade-data-title">
+                    {{ 'share.tradeData.title' | transloco }}
+                </h3>
+
+                <div class="trade-data-grid">
+
+                    <div class="trade-item">
+                        <span class="trade-label">{{ 'share.tradeData.prevPrice' | transloco }}</span>
+                        <span class="trade-value">{{ share.prevPrice | number:'1.2-2' }} ₽</span>
+                    </div>
+
+                    <div class="trade-item">
+                        <span class="trade-label">{{ 'share.tradeData.open' | transloco }}</span>
+                        <span class="trade-value">{{ share.open | number:'1.2-2' }} ₽</span>
+                    </div>
+
+                    <div class="trade-item">
+                        <span class="trade-label">{{ 'share.tradeData.low' | transloco }}</span>
+                        <span class="trade-value">{{ share.low | number:'1.2-2' }} ₽</span>
+                    </div>
+
+                    <div class="trade-item">
+                        <span class="trade-label">{{ 'share.tradeData.high' | transloco }}</span>
+                        <span class="trade-value">{{ share.high | number:'1.2-2' }} ₽</span>
+                    </div>
+
+                    <div class="trade-item">
+                        <span class="trade-label">{{ 'share.tradeData.valueToday' | transloco }}</span>
+                        <span class="trade-value">{{ share.valueToday | number:'1.2-2' }} ₽</span>
+                    </div>
+
+                    <div class="trade-item">
+                        <span class="trade-label">{{ 'share.tradeData.valueTodayRur' | transloco }}</span>
+                        <span class="trade-value">{{ share.valueTodayRur | number:'1.2-2' }} ₽</span>
+                    </div>
+
+                    <div class="trade-item">
+                        <span class="trade-label">{{ 'share.tradeData.volumeToday' | transloco }}</span>
+                        <span class="trade-value">{{ share.volumeToday | number }}</span>
+                    </div>
+
+                    <div class="trade-item">
+                        <span class="trade-label">{{ 'share.tradeData.valueTodayUsd' | transloco }}</span>
+                        <span class="trade-value">{{ share.valueTodayUsd | number:'1.2-2' }} ₽</span>
+                    </div>
+
+                </div>
+            </div>
+
+        } @else {
+            <p>{{ 'share.messages.loadingData' | transloco }}</p>
+        }
+    </div>
+
 </div>

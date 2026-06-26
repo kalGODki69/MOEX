@@ -1,91 +1,99 @@
-@if (headers$ | async; as headers) {
-  <table tuiTable>
+<table tuiTable>
     <thead>
     <tr>
-      @for (col of headers; track col.key) {
-        <th
-          tuiTh
-          class="sortable-header"
-          (click)="sortBy(col.key)"
-        >
-          {{ col.label }}
-          <span class="sort-indicator">
+        @for (col of headers; track col.key) {
+            <th
+                    tuiTh
+                    class="sortable-header"
+                    (click)="sortBy(col.key)"
+            >
+                {{ col.labelKey | transloco }}
+
+                <span class="sort-indicator">
             @if (sortColumn === col.key) {
-              {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                {{ sortDirection === 'asc' ? '▲' : '▼' }}
             } @else {
-              <span class="sort-placeholder">⇅</span>
+                <span class="sort-placeholder">⇅</span>
             }
           </span>
-        </th>
-      }
+            </th>
+        }
     </tr>
     </thead>
-    <tbody tuiTbody>
-      @for (item of sortedAndPaginatedData; track item.code) {
-        <tr
-          [routerLink]="clickable ? ['/share', item.code] : null"
-          [class.clickable]="clickable"
-        >
-          @for (col of headers; track col.key) {
-            <td tuiTd>
-              @switch (col.key) {
-                @case ('changePercents') {
-                  <span [style.color]="item.changePercents >= 0 ? 'green' : 'red'">
-                    {{ item.changePercents | number:'1.2-2' }}%
-                  </span>
-                }
-                @case ('first') {
-                  {{ item.first | number:'1.2-2' }}
-                }
-                @case ('last') {
-                  {{ item.last | number:'1.2-2' }}
-                }
-                @case ('min') {
-                  {{ item.min | number:'1.2-2' }}
-                }
-                @case ('max') {
-                  {{ item.max | number:'1.2-2' }}
-                }
-                @case ('volume') {
-                  {{ item.volume | number }}
-                }
-                @default {
-                  {{ item[col.key] }}
-                }
-              }
-            </td>
-          }
-        </tr>
-      }
-    </tbody>
-  </table>
 
-  @if (data.length > itemsPerPage) {
-    @if (paginationLabels$ | async; as labels) {
-      <div class="pagination">
+    <tbody tuiTbody>
+        @for (item of sortedAndPaginatedData; track item.code) {
+            <tr
+                    [routerLink]="clickable ? ['/share', item.code] : null"
+                    [class.clickable]="clickable"
+            >
+                @for (col of headers; track col.key) {
+                    <td tuiTd>
+                        @switch (col.key) {
+                            @case ('changePercents') {
+                                <span [style.color]="item.changePercents >= 0 ? 'green' : 'red'">
+                  {{ item.changePercents | number:'1.2-2' }}%
+                </span>
+                            }
+
+                            @case ('first') {
+                                {{ item.first | number:'1.2-2' }}
+                            }
+
+                            @case ('last') {
+                                {{ item.last | number:'1.2-2' }}
+                            }
+
+                            @case ('min') {
+                                {{ item.min | number:'1.2-2' }}
+                            }
+
+                            @case ('max') {
+                                {{ item.max | number:'1.2-2' }}
+                            }
+
+                            @case ('volume') {
+                                {{ item.volume | number }}
+                            }
+
+                            @default {
+                                {{ item[col.key] }}
+                            }
+                        }
+                    </td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (data.length > itemsPerPage) {
+    <div class="pagination">
         <div class="pagination-info">
-          {{ labels.pages }} {{ totalPages }}
+            {{ 'shareTable.pages' | transloco }}
+            {{ totalPages }}
         </div>
+
         <div class="pagination-navigation">
-          <button
-            class="pagination-arrow"
-            (click)="previousPage()"
-            [disabled]="currentPage === 1"
-          >
-            ‹
-          </button>
-          <span class="current-page">
-            {{ currentPage }}
-          </span>
-          <button
-            class="pagination-arrow"
-            (click)="nextPage()"
-            [disabled]="currentPage === totalPages"
-          >
-            ›
-          </button>
+            <button
+                    class="pagination-arrow"
+                    (click)="previousPage()"
+                    [disabled]="currentPage === 1"
+            >
+                ‹
+            </button>
+
+            <span class="current-page">
+        {{ currentPage }}
+      </span>
+
+            <button
+                    class="pagination-arrow"
+                    (click)="nextPage()"
+                    [disabled]="currentPage === totalPages"
+            >
+                ›
+            </button>
         </div>
-      </div>
-    }
-  }
+    </div>
 }

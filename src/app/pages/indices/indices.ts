@@ -1,7 +1,9 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
-import {combineLatest, interval, Observable, of} from 'rxjs';
-import { map, startWith, switchMap, catchError } from 'rxjs/operators';
+import { combineLatest, interval, Observable, of } from 'rxjs';
+import { startWith, switchMap, catchError } from 'rxjs/operators';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
+
 import { SharesTableComponent } from '../../shared/ui/shares-table/shares-table';
 import { Share } from '../../shared/models/share.model';
 import { MoexService } from '../../services/moex';
@@ -13,6 +15,7 @@ import { Header } from '../../shared/ui/header/header';
   standalone: true,
   imports: [
     AsyncPipe,
+    TranslocoPipe,
     SharesTableComponent,
     Header,
   ],
@@ -20,25 +23,35 @@ import { Header } from '../../shared/ui/header/header';
   styleUrls: ['./indices.less'],
 })
 export class Indices implements OnInit {
-  private languageService = inject(LanguageService);
-  private moexService = inject(MoexService);
+  private readonly moexService = inject(MoexService);
+  private readonly languageService = inject(LanguageService);
+  private readonly translocoService = inject(TranslocoService);
 
   indices$!: Observable<Share[]>;
-  title$ = this.languageService.langCode$.pipe(
-    map(lang => lang === 'ru' ? 'MOEX / Индексы' : 'MOEX / Indices')
-  );
+
+  readonly title$ =
+      this.translocoService.selectTranslate('indices.title');
 
   ngOnInit(): void {
-    const refreshInterval$ = interval(30000).pipe(startWith(0));
+    const refreshInterval$ = interval(30000).pipe(
+        startWith(0)
+    );
+
     this.indices$ = combineLatest([
       this.languageService.langCode$,
       refreshInterval$
     ]).pipe(
-      switchMap(([lang]) => this.moexService.getIndices(lang)),
-      catchError(err => {
-        console.error('Ошибка загрузки данных MOEX индексов', err);
-        return of([]);
-      })
+        switchMap(([lang]) =>
+            this.moexService.getIndices(lang)
+        ),
+        catchError(error => {
+          console.error(
+              'Ошибка загрузки данных MOEX индексов',
+              error
+          );
+
+          return of([]);
+        })
     );
   }
 }

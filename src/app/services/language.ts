@@ -1,22 +1,43 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { TuiLanguage, TUI_RUSSIAN_LANGUAGE, TUI_ENGLISH_LANGUAGE } from '@taiga-ui/i18n';
+import {
+  TuiLanguage,
+  TUI_RUSSIAN_LANGUAGE,
+  TUI_ENGLISH_LANGUAGE,
+} from '@taiga-ui/i18n';
+import { TranslocoService } from '@jsverse/transloco';
 
-@Injectable({ providedIn: 'root' })
+export type AppLanguage = 'ru' | 'en';
+
+@Injectable({
+  providedIn: 'root',
+})
 export class LanguageService {
-  private languageSubject = new BehaviorSubject<TuiLanguage>(TUI_RUSSIAN_LANGUAGE);
-  public language$ = this.languageSubject.asObservable();
+  private readonly transloco = inject(TranslocoService);
 
-  private langCodeSubject = new BehaviorSubject<'ru' | 'en'>('ru');
-  public langCode$ = this.langCodeSubject.asObservable();
+  private readonly languageSubject =
+      new BehaviorSubject<TuiLanguage>(TUI_RUSSIAN_LANGUAGE);
 
-  setLanguage(lang: 'en' | 'ru'): void {
-    const newLanguage = lang === 'en' ? TUI_ENGLISH_LANGUAGE : TUI_RUSSIAN_LANGUAGE;
-    this.languageSubject.next(newLanguage);
+  readonly language$ = this.languageSubject.asObservable();
+
+  private readonly langCodeSubject =
+      new BehaviorSubject<AppLanguage>('ru');
+
+  readonly langCode$ = this.langCodeSubject.asObservable();
+
+  setLanguage(lang: AppLanguage): void {
+    this.transloco.setActiveLang(lang);
+
+    this.languageSubject.next(
+        lang === 'en'
+            ? TUI_ENGLISH_LANGUAGE
+            : TUI_RUSSIAN_LANGUAGE
+    );
+
     this.langCodeSubject.next(lang);
   }
 
-  getCurrentLanguageCode(): 'ru' | 'en' {
+  getCurrentLanguageCode(): AppLanguage {
     return this.langCodeSubject.value;
   }
 }
