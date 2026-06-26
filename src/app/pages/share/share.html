@@ -3,16 +3,14 @@
 <div class="content-wrapper">
 
     <div class="left-column">
-        <div class="interval-controls">
+        <tui-segmented
+                [activeItemIndex]="activeIntervalIndex"
+                (activeItemIndexChange)="onIntervalChange($event)"
+        >
             @for (item of intervalLabels; track item.value) {
-                <button
-                        (click)="setInterval(item.value)"
-                        [class.active]="(interval$ | async) === item.value"
-                >
-                    {{ item.labelKey | transloco }}
-                </button>
+                <button>{{ item.labelKey | transloco }}</button>
             }
-        </div>
+        </tui-segmented>
 
         <div class="chart-wrapper">
             @if (stats$ | async; as stats) {

@@ -13,6 +13,7 @@ import { EChartsOption } from 'echarts';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { InstrumentParamsComponent } from '../../shared/ui/instrument-params/instrument-params';
 import { TradeDataComponent } from '../../shared/ui/trade-data/trade-data';
+import { TuiSegmented } from '@taiga-ui/kit';
 
 @Component({
   selector: 'app-share',
@@ -25,6 +26,7 @@ import { TradeDataComponent } from '../../shared/ui/trade-data/trade-data';
     TranslocoPipe,
     InstrumentParamsComponent,
     TradeDataComponent,
+    TuiSegmented,
   ],
   templateUrl: './share.html',
   styleUrl: './share.less',
@@ -76,6 +78,16 @@ export class Share implements OnInit {
   private intervalSubject = new BehaviorSubject<number>(1);
 
   public interval$ = this.intervalSubject.asObservable();
+
+  get activeIntervalIndex(): number {
+    return this.intervalLabels.findIndex(
+      (item) => item.value === this.intervalSubject.value
+    );
+  }
+
+  onIntervalChange(index: number): void {
+    this.setInterval(this.intervalLabels[index].value);
+  }
 
   setInterval(interval: number): void {
     this.intervalSubject.next(interval);
