@@ -4,25 +4,25 @@
         @for (col of headers; track col.key) {
             <th
                     tuiTh
-                    class="sortable-header"
-                    (click)="sortBy(col.key)"
+                    [sorter]="null"
+                    (click)="onHeaderClick(col.key)"
+                    class="sortable"
             >
                 {{ col.labelKey | transloco }}
-
                 <span class="sort-indicator">
-            @if (sortColumn === col.key) {
-                {{ sortDirection === 'asc' ? '▲' : '▼' }}
-            } @else {
-                <span class="sort-placeholder">⇅</span>
-            }
-          </span>
+                    @if (sortBy() === col.key) {
+                        {{ sortDirection() === 'asc' ? '▲' : '▼' }}
+                    } @else {
+                        <span class="sort-arrows">▲▼</span>
+                    }
+                </span>
             </th>
         }
     </tr>
     </thead>
 
     <tbody tuiTbody>
-        @for (item of sortedAndPaginatedData; track item.code) {
+        @for (item of paginatedData; track item.code) {
             <tr
                     [routerLink]="clickable ? ['/share', item.code] : null"
                     [class.clickable]="clickable"

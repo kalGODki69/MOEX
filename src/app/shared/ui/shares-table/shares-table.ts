@@ -35,12 +35,12 @@ export class SharesTableComponent {
   readonly itemsPerPage = 10;
   readonly pageIndex = signal(0);
 
+  sortBy = signal<keyof Share | null>(null);
+  sortDirection = signal<'asc' | 'desc'>('asc');
+
   get totalPages(): number {
     return Math.max(1, Math.ceil(this.data.length / this.itemsPerPage));
   }
-
-  sortColumn: keyof Share | null = null;
-  sortDirection: 'asc' | 'desc' = 'asc';
 
   readonly headers: ReadonlyArray<{
     key: keyof Share;
@@ -57,56 +57,48 @@ export class SharesTableComponent {
     { key: 'time', labelKey: 'shareTable.time' },
   ];
 
-  get sortedAndPaginatedData(): Share[] {
-    let sortedData = this.data;
+  get sortedData(): Share[] {
+    const column = this.sortBy();
 
-    if (this.sortColumn) {
-      sortedData = [...this.data].sort((a, b) => {
-        const aValue = a[this.sortColumn!];
-        const bValue = b[this.sortColumn!];
-
-        if (aValue === undefined || aValue === null) {
-          return 1;
-        }
-
-        if (bValue === undefined || bValue === null) {
-          return -1;
-        }
-
-        if (
-            typeof aValue === 'string' &&
-            typeof bValue === 'string'
-        ) {
-          return this.sortDirection === 'asc'
-              ? aValue.localeCompare(bValue)
-              : bValue.localeCompare(aValue);
-        }
-
-        return this.sortDirection === 'asc'
-            ? Number(aValue) - Number(bValue)
-            : Number(bValue) - Number(aValue);
-      });
+    if (!column) {
+      return this.data;
     }
 
-    const startIndex = this.pageIndex() * this.itemsPerPage;
+    return [...this.data].sort((a, b) => {
+      const aVal = a[column];
+      const bVal = b[column];
 
-    return sortedData.slice(
-        startIndex,
-        startIndex + this.itemsPerPage
-    );
+      if (aVal == null) return 1;
+      if (bVal == null) return -1;
+
+      if (typeof aVal === 'string' && typeof bVal === 'string') {
+        return this.sortDirection() === 'asc'
+            ? aVal.localeCompare(bVal)
+            : bVal.localeCompare(aVal);
+      }
+
+      return this.sortDirection() === 'asc'
+          ? Number(aVal) - Number(bVal)
+          : Number(bVal) - Number(aVal);
+    });
   }
 
-  sortBy(column: keyof Share): void {
-    if (this.sortColumn === column) {
-      this.sortDirection =
-          this.sortDirection === 'asc'
-              ? 'desc'
-              : 'asc';
-    } else {
-      this.sortColumn = column;
-      this.sortDirection = 'asc';
-    }
+  get paginatedData(): Share[] {
+    const start = this.pageIndex() * this.itemsPerPage;
+    return this.sortedData.slice(start, start + this.itemsPerPage);
+  }
 
+  onHeaderClick(key: keyof Share): void {
+    if (this.sortBy() === key) {
+      if (this.sortDirection() === 'asc') {
+        this.sortDirection.set('desc');
+      } else {
+        this.sortBy.set(null);
+      }
+    } else {
+      this.sortBy.set(key);
+      this.sortDirection.set('asc');
+    }
     this.pageIndex.set(0);
   }
 }
