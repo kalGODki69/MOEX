@@ -4,8 +4,7 @@ import { RouterModule } from '@angular/router';
 import { ReactiveFormsModule, FormControl, FormGroup } from '@angular/forms';
 import { TuiTitle, TuiRadio } from '@taiga-ui/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { TranslocoPipe } from '@jsverse/transloco';
-import { LanguageService } from '../../../services/language';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-header',
@@ -24,7 +23,7 @@ import { LanguageService } from '../../../services/language';
 export class Header {
   @Input() title = '';
 
-  private readonly languageService = inject(LanguageService);
+  private readonly transloco = inject(TranslocoService);
   private readonly destroyRef = inject(DestroyRef);
 
   readonly form = new FormGroup({
@@ -33,14 +32,14 @@ export class Header {
 
   constructor() {
     this.form.controls.choice.setValue(
-        this.languageService.getCurrentLanguageCode()
+        this.transloco.getActiveLang() as 'ru' | 'en'
     );
 
     this.form.controls.choice.valueChanges
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe((lang) => {
           if (lang) {
-            this.languageService.setLanguage(lang);
+            this.transloco.setActiveLang(lang);
           }
         });
   }

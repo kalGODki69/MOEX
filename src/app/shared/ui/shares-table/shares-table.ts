@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   TuiTableDirective,
@@ -6,6 +6,7 @@ import {
   TuiTableTd,
   TuiTableTh,
 } from '@taiga-ui/addon-table';
+import { TuiPagination } from '@taiga-ui/kit';
 import { RouterModule } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 
@@ -20,19 +21,23 @@ import { Share } from '../../models/share.model';
     TuiTableTbody,
     TuiTableTh,
     TuiTableTd,
+    TuiPagination,
     RouterModule,
     TranslocoPipe,
   ],
   templateUrl: './shares-table.html',
   styleUrl: './shares-table.less',
 })
-export class SharesTableComponent implements OnInit {
+export class SharesTableComponent {
   @Input() data: Share[] = [];
   @Input() clickable = false;
 
-  currentPage = 1;
-  itemsPerPage = 10;
-  totalPages = 1;
+  readonly itemsPerPage = 10;
+  readonly pageIndex = signal(0);
+
+  get totalPages(): number {
+    return Math.max(1, Math.ceil(this.data.length / this.itemsPerPage));
+  }
 
   sortColumn: keyof Share | null = null;
   sortDirection: 'asc' | 'desc' = 'asc';
@@ -51,10 +56,6 @@ export class SharesTableComponent implements OnInit {
     { key: 'volume', labelKey: 'shareTable.volume' },
     { key: 'time', labelKey: 'shareTable.time' },
   ];
-
-  ngOnInit(): void {
-    this.updateTotalPages();
-  }
 
   get sortedAndPaginatedData(): Share[] {
     let sortedData = this.data;
@@ -87,8 +88,7 @@ export class SharesTableComponent implements OnInit {
       });
     }
 
-    const startIndex =
-        (this.currentPage - 1) * this.itemsPerPage;
+    const startIndex = this.pageIndex() * this.itemsPerPage;
 
     return sortedData.slice(
         startIndex,
@@ -107,31 +107,6 @@ export class SharesTableComponent implements OnInit {
       this.sortDirection = 'asc';
     }
 
-    this.currentPage = 1;
-  }
-
-  previousPage(): void {
-    if (this.currentPage > 1) {
-      this.currentPage--;
-    }
-  }
-
-  nextPage(): void {
-    if (this.currentPage < this.totalPages) {
-      this.currentPage++;
-    }
-  }
-
-  private updateTotalPages(): void {
-    this.totalPages = Math.ceil(
-        this.data.length / this.itemsPerPage
-    );
-
-    if (
-        this.currentPage > this.totalPages &&
-        this.totalPages > 0
-    ) {
-      this.currentPage = 1;
-    }
+    this.pageIndex.set(0);
   }
 }

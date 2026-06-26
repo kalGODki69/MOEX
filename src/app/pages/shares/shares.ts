@@ -1,13 +1,12 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { Observable, of, combineLatest, interval } from 'rxjs';
-import { map, startWith, switchMap, catchError } from 'rxjs/operators';
+import { startWith, switchMap, catchError } from 'rxjs/operators';
 
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 
 import { SharesTableComponent } from '../../shared/ui/shares-table/shares-table';
 import { MoexService } from '../../services/moex';
-import { LanguageService } from '../../services/language';
 import { Header } from '../../shared/ui/header/header';
 import { Share } from '../../shared/models/share.model';
 
@@ -24,21 +23,12 @@ import { Share } from '../../shared/models/share.model';
   styleUrls: ['./shares.less'],
 })
 export class Shares implements OnInit {
-  private readonly languageService = inject(LanguageService);
   private readonly moexService = inject(MoexService);
   private readonly transloco = inject(TranslocoService);
 
   shares$!: Observable<Share[]>;
 
-  title$ = this.languageService.langCode$.pipe(
-      map((lang) =>
-          this.transloco.translate(
-              'shares.title',
-              {},
-              lang
-          )
-      )
-  );
+  title$ = this.transloco.selectTranslate('shares.title');
 
   ngOnInit(): void {
     const refreshInterval$ = interval(30000).pipe(
@@ -46,11 +36,11 @@ export class Shares implements OnInit {
     );
 
     this.shares$ = combineLatest([
-      this.languageService.langCode$,
+      this.transloco.langChanges$,
       refreshInterval$,
     ]).pipe(
         switchMap(([lang]) =>
-            this.moexService.getShares(lang)
+            this.moexService.getShares(lang as 'ru' | 'en')
         ),
         catchError((err) => {
           console.error(

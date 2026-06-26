@@ -3,7 +3,6 @@ import { ActivatedRoute } from '@angular/router';
 import { AsyncPipe, DecimalPipe } from '@angular/common';
 import { Observable, of, combineLatest, map, switchMap, catchError, interval, startWith, BehaviorSubject } from 'rxjs';
 
-import { LanguageService } from '../../services/language';
 import { MoexService } from '../../services/moex';
 import { Share as ShareInterface } from '../../shared/models/share.model';
 
@@ -27,7 +26,6 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
   styleUrl: './share.less',
 })
 export class Share implements OnInit {
-  public languageService = inject(LanguageService);
   private moexService = inject(MoexService);
   private route = inject(ActivatedRoute);
   private transloco = inject(TranslocoService);
@@ -67,9 +65,9 @@ export class Share implements OnInit {
   ];
 
   private refresh$ = combineLatest([
-    this.languageService.langCode$,
+    this.transloco.langChanges$,
     interval(5000).pipe(startWith(0)),
-  ]).pipe(map(([lang]) => lang));
+  ]).pipe(map(([lang]) => lang as 'ru' | 'en'));
 
   private intervalSubject = new BehaviorSubject<number>(1);
 
@@ -177,9 +175,11 @@ export class Share implements OnInit {
 
     this.chartOptions$ = combineLatest([
       this.candles$,
-      this.languageService.langCode$,
+      this.transloco.langChanges$,
     ]).pipe(
       map(([data, lang]) => {
+        const currentLang = lang as 'ru' | 'en';
+
         if (!data?.length) {
           return null;
         }
@@ -216,17 +216,17 @@ export class Share implements OnInit {
         });
 
         const priceLabel =
-          lang === 'ru'
+          currentLang === 'ru'
             ? 'Цена'
             : 'Price';
 
         const volumeLabel =
-          lang === 'ru'
+          currentLang === 'ru'
             ? 'Объём'
             : 'Volume';
 
         const volumeText =
-          lang === 'ru'
+          currentLang === 'ru'
             ? 'Объем'
             : 'Volume';
 
@@ -338,7 +338,7 @@ export class Share implements OnInit {
                   const date = new Date(value);
 
                   return `${date.getDate()} ${
-  monthNames[lang as 'ru' | 'en'][
+  monthNames[currentLang][
       date.getMonth()
       ]
 }`;
@@ -431,25 +431,18 @@ export class Share implements OnInit {
     );
 
     this.title$ = combineLatest([
-      this.languageService.langCode$,
+      this.transloco.selectTranslate('share.type.shares'),
       this.instrument$,
     ]).pipe(
-      map(([lang, instrument]) => {
-        const type =
-          this.transloco.translate(
-            'share.type.shares',
-            {},
-            lang
-          );
-
+      map(([type, instrument]) => {
         const name =
           instrument?.name ||
           instrument?.code ||
           '';
 
         return `MOEX / ${type} / ${name}`;
-})
-);
-}
+      })
+    );
+  }
 }
 

@@ -7,7 +7,6 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { SharesTableComponent } from '../../shared/ui/shares-table/shares-table';
 import { Share } from '../../shared/models/share.model';
 import { MoexService } from '../../services/moex';
-import { LanguageService } from '../../services/language';
 import { Header } from '../../shared/ui/header/header';
 
 @Component({
@@ -24,13 +23,12 @@ import { Header } from '../../shared/ui/header/header';
 })
 export class Indices implements OnInit {
   private readonly moexService = inject(MoexService);
-  private readonly languageService = inject(LanguageService);
-  private readonly translocoService = inject(TranslocoService);
+  private readonly transloco = inject(TranslocoService);
 
   indices$!: Observable<Share[]>;
 
   readonly title$ =
-      this.translocoService.selectTranslate('indices.title');
+      this.transloco.selectTranslate('indices.title');
 
   ngOnInit(): void {
     const refreshInterval$ = interval(30000).pipe(
@@ -38,11 +36,11 @@ export class Indices implements OnInit {
     );
 
     this.indices$ = combineLatest([
-      this.languageService.langCode$,
+      this.transloco.langChanges$,
       refreshInterval$
     ]).pipe(
         switchMap(([lang]) =>
-            this.moexService.getIndices(lang)
+            this.moexService.getIndices(lang as 'ru' | 'en')
         ),
         catchError(error => {
           console.error(

@@ -71,29 +71,13 @@
     <div class="pagination">
         <div class="pagination-info">
             {{ 'shareTable.pages' | transloco }}
-            {{ totalPages }}
+            <span class="pagination-total">{{ totalPages }}</span>
         </div>
 
-        <div class="pagination-navigation">
-            <button
-                    class="pagination-arrow"
-                    (click)="previousPage()"
-                    [disabled]="currentPage === 1"
-            >
-                ‹
-            </button>
-
-            <span class="current-page">
-        {{ currentPage }}
-      </span>
-
-            <button
-                    class="pagination-arrow"
-                    (click)="nextPage()"
-                    [disabled]="currentPage === totalPages"
-            >
-                ›
-            </button>
-        </div>
+        <tui-pagination
+            class="pagination-controls"
+            [length]="totalPages"
+            [(index)]="pageIndex"
+        />
     </div>
 }
