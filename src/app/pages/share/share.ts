@@ -11,6 +11,8 @@ import { NgxEchartsModule } from 'ngx-echarts';
 import { EChartsOption } from 'echarts';
 
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
+import { InstrumentParamsComponent } from '../../shared/ui/instrument-params/instrument-params';
+import { TradeDataComponent } from '../../shared/ui/trade-data/trade-data';
 
 @Component({
   selector: 'app-share',
@@ -21,6 +23,8 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
     DecimalPipe,
     NgxEchartsModule,
     TranslocoPipe,
+    InstrumentParamsComponent,
+    TradeDataComponent,
   ],
   templateUrl: './share.html',
   styleUrl: './share.less',
@@ -338,10 +342,10 @@ export class Share implements OnInit {
                   const date = new Date(value);
 
                   return `${date.getDate()} ${
-  monthNames[currentLang][
-      date.getMonth()
-      ]
-}`;
+                    monthNames[currentLang][
+                        date.getMonth()
+                    ]
+                  }`;
                 },
               },
               splitLine: {
@@ -410,7 +414,7 @@ export class Share implements OnInit {
                         {
                           yAxis:
                             prices[
-                              prices.length - 1
+                                prices.length - 1
                             ],
                         },
                       ],
@@ -445,4 +449,3 @@ export class Share implements OnInit {
     );
   }
 }
-

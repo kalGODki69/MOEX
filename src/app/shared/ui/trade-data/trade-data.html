@@ -1,0 +1,49 @@
+<div tuiCardLarge class="card-bordered">
+    <h3 class="trade-data-title">
+        {{ 'share.tradeData.title' | transloco }}
+    </h3>
+
+    <div class="trade-data-grid">
+
+        <div class="trade-item">
+            <span class="trade-label">{{ 'share.tradeData.prevPrice' | transloco }}</span>
+            <span class="trade-value">{{ share.prevPrice | number:'1.2-2' }} ₽</span>
+        </div>
+
+        <div class="trade-item">
+            <span class="trade-label">{{ 'share.tradeData.open' | transloco }}</span>
+            <span class="trade-value">{{ share.open | number:'1.2-2' }} ₽</span>
+        </div>
+
+        <div class="trade-item">
+            <span class="trade-label">{{ 'share.tradeData.low' | transloco }}</span>
+            <span class="trade-value">{{ share.low | number:'1.2-2' }} ₽</span>
+        </div>
+
+        <div class="trade-item">
+            <span class="trade-label">{{ 'share.tradeData.high' | transloco }}</span>
+            <span class="trade-value">{{ share.high | number:'1.2-2' }} ₽</span>
+        </div>
+
+        <div class="trade-item">
+            <span class="trade-label">{{ 'share.tradeData.valueToday' | transloco }}</span>
+            <span class="trade-value">{{ share.valueToday | number:'1.2-2' }} ₽</span>
+        </div>
+
+        <div class="trade-item">
+            <span class="trade-label">{{ 'share.tradeData.valueTodayRur' | transloco }}</span>
+            <span class="trade-value">{{ share.valueTodayRur | number:'1.2-2' }} ₽</span>
+        </div>
+
+        <div class="trade-item">
+            <span class="trade-label">{{ 'share.tradeData.volumeToday' | transloco }}</span>
+            <span class="trade-value">{{ share.volumeToday | number }}</span>
+        </div>
+
+        <div class="trade-item">
+            <span class="trade-label">{{ 'share.tradeData.valueTodayUsd' | transloco }}</span>
+            <span class="trade-value">{{ share.valueTodayUsd | number:'1.2-2' }} ₽</span>
+        </div>
+
+    </div>
+</div>

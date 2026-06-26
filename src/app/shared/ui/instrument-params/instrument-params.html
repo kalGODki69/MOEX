@@ -1,0 +1,45 @@
+<div tuiCardLarge class="card-bordered">
+    <div class="params-grid">
+
+        <div class="param-item">
+            <span class="param-label">{{ 'share.params.code' | transloco }}</span>
+            <span class="param-value">{{ share.code }}</span>
+        </div>
+
+        <div class="param-item">
+            <span class="param-label">{{ 'share.params.isin' | transloco }}</span>
+            <span class="param-value">{{ share.isin || '-' }}</span>
+        </div>
+
+        <div class="param-item">
+            <span class="param-label">{{ 'share.params.boardId' | transloco }}</span>
+            <span class="param-value">{{ share.boardId || '-' }}</span>
+        </div>
+
+        <div class="param-item">
+            <span class="param-label">{{ 'share.params.listLevel' | transloco }}</span>
+            <span class="param-value">{{ share.listLevel || '-' }}</span>
+        </div>
+
+        <div class="param-item">
+            <span class="param-label">{{ 'share.params.boardName' | transloco }}</span>
+            <span class="param-value">{{ share.boardName || '-' }}</span>
+        </div>
+
+        <div class="param-item">
+            <span class="param-label">{{ 'share.params.lotSize' | transloco }}</span>
+            <span class="param-value">{{ share.lotSize || '-' }}</span>
+        </div>
+
+        <div class="param-item">
+            <span class="param-label">{{ 'share.params.prevDate' | transloco }}</span>
+            <span class="param-value">{{ share.prevDate || '-' }}</span>
+        </div>
+
+        <div class="param-item">
+            <span class="param-label">{{ 'share.params.status' | transloco }}</span>
+            <span class="param-value">{{ share.status === 'N' ? '×' : '✓' }}</span>
+        </div>
+
+    </div>
+</div>
