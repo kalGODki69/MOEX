@@ -1,9 +1,7 @@
 <app-header [title]="title$ | async"></app-header>
 
-@if (indices$ | async; as indices) {
-    <app-shares-table [data]="indices"></app-shares-table>
-} @else {
-    <div class="loading">
-        {{ 'share.messages.loading' | transloco }}
-    </div>
-}
+<tui-loader [loading]="(indices$ | async) === null" [textContent]="'share.messages.loading' | transloco">
+    @if (indices$ | async; as indices) {
+        <app-shares-table [data]="indices"></app-shares-table>
+    }
+</tui-loader>

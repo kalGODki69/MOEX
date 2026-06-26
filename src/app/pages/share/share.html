@@ -54,32 +54,30 @@
             }
 
             <div class="chart-area">
-                @if (candles$ | async; as candles) {
-                    @if (candles.length === 0) {
-                        <div class="chart-placeholder">
-                            {{ 'share.messages.noData' | transloco }}
-                        </div>
-                    } @else {
-                        @if (chartOptions$ | async; as options) {
-                            <div echarts [options]="options" class="chart-container"></div>
+                <tui-loader [loading]="(candles$ | async) === null" [textContent]="'share.messages.loadingChart' | transloco">
+                    @if (candles$ | async; as candles) {
+                        @if (candles.length === 0) {
+                            <div class="chart-placeholder">
+                                {{ 'share.messages.noData' | transloco }}
+                            </div>
+                        } @else {
+                            @if (chartOptions$ | async; as options) {
+                                <div echarts [options]="options" class="chart-container"></div>
+                            }
                         }
                     }
-                } @else {
-                    <div class="chart-placeholder">
-                        {{ 'share.messages.loadingChart' | transloco }}
-                    </div>
-                }
+                </tui-loader>
             </div>
         </div>
     </div>
 
     <div class="params-area">
-        @if (instrument$ | async; as share) {
-            <app-instrument-params [share]="share"></app-instrument-params>
-            <app-trade-data [share]="share"></app-trade-data>
-        } @else {
-            <p>{{ 'share.messages.loadingData' | transloco }}</p>
-        }
+        <tui-loader [loading]="(instrument$ | async) === null" [textContent]="'share.messages.loadingData' | transloco">
+            @if (instrument$ | async; as share) {
+                <app-instrument-params [share]="share"></app-instrument-params>
+                <app-trade-data [share]="share"></app-trade-data>
+            }
+        </tui-loader>
     </div>
 
 </div>

@@ -8,6 +8,7 @@ import { SharesTableComponent } from '../../shared/ui/shares-table/shares-table'
 import { Share } from '../../shared/models/share.model';
 import { MoexService } from '../../services/moex';
 import { Header } from '../../shared/ui/header/header';
+import { TuiLoader } from '@taiga-ui/core';
 
 @Component({
   selector: 'app-indices',
@@ -17,6 +18,7 @@ import { Header } from '../../shared/ui/header/header';
     TranslocoPipe,
     SharesTableComponent,
     Header,
+    TuiLoader,
   ],
   templateUrl: './indices.html',
   styleUrls: ['./indices.less'],

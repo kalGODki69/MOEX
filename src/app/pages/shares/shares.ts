@@ -9,6 +9,7 @@ import { SharesTableComponent } from '../../shared/ui/shares-table/shares-table'
 import { MoexService } from '../../services/moex';
 import { Header } from '../../shared/ui/header/header';
 import { Share } from '../../shared/models/share.model';
+import { TuiLoader } from '@taiga-ui/core';
 
 @Component({
   selector: 'app-shares',
@@ -18,6 +19,7 @@ import { Share } from '../../shared/models/share.model';
     SharesTableComponent,
     Header,
     TranslocoPipe,
+    TuiLoader,
   ],
   templateUrl: './shares.html',
   styleUrls: ['./shares.less'],

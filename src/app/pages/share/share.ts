@@ -14,6 +14,7 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { InstrumentParamsComponent } from '../../shared/ui/instrument-params/instrument-params';
 import { TradeDataComponent } from '../../shared/ui/trade-data/trade-data';
 import { TuiSegmented } from '@taiga-ui/kit';
+import { TuiLoader } from '@taiga-ui/core';
 
 @Component({
   selector: 'app-share',
@@ -27,6 +28,7 @@ import { TuiSegmented } from '@taiga-ui/kit';
     InstrumentParamsComponent,
     TradeDataComponent,
     TuiSegmented,
+    TuiLoader,
   ],
   templateUrl: './share.html',
   styleUrl: './share.less',
