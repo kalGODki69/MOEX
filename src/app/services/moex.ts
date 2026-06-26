@@ -63,12 +63,12 @@ export class MoexService {
     const idxPrevPrice = securitiesColumns.indexOf('PREVPRICE');
 
     const idxSecId = marketdataColumns.indexOf('SECID');
-    const idxLast = this.findColumnIndex(marketdataColumns, ['LAST', 'LASTVALUE', 'CURRENTVALUE', 'CLOSEPRICE']);
-    const idxFirst = this.findColumnIndex(marketdataColumns, ['OPEN', 'OPENVALUE', 'FIRST']);
-    const idxMin = this.findColumnIndex(marketdataColumns, ['LOW', 'LOWVALUE', 'MIN']);
-    const idxMax = this.findColumnIndex(marketdataColumns, ['HIGH', 'HIGHVALUE', 'MAX']);
-    const idxVolume = this.findColumnIndex(marketdataColumns, ['VOLUME', 'VOLTODAY', 'QTY']);
-    const idxTime = this.findColumnIndex(marketdataColumns, ['TIME', 'UPDATETIME', 'SYSTIME']);
+    const idxLast = marketdataColumns.indexOf('LAST');
+    const idxFirst = marketdataColumns.indexOf('OPEN');
+    const idxMin = marketdataColumns.indexOf('LOW');
+    const idxMax = marketdataColumns.indexOf('HIGH');
+    const idxVolume = marketdataColumns.indexOf('VOLUME');
+    const idxTime = marketdataColumns.indexOf('TIME');
 
     const idxValueToday = marketdataColumns.indexOf('VALTODAY');
     const idxValueTodayRur = marketdataColumns.indexOf('VALTODAY_RUR');
@@ -99,17 +99,6 @@ export class MoexService {
           }
         }
 
-        if (changePercents === 0) {
-          const idxChangeValue = this.findColumnIndex(marketdataColumns, ['CHANGEVALUE', 'LASTCHANGE']);
-          if (idxChangeValue !== -1) {
-            const change = parseFloat(row[idxChangeValue]);
-            if (!isNaN(change) && last !== 0) {
-              const prev = last - change;
-              if (prev !== 0) changePercents = (change / prev) * 100;
-            }
-          }
-        }
-
         marketMap.set(secid, {
           last: isNaN(last) ? 0 : last,
           changePercents: isNaN(changePercents) ? 0 : changePercents,
@@ -118,10 +107,6 @@ export class MoexService {
           max: parseFloat(row[idxMax]) || 0,
           volume: parseInt(row[idxVolume], 10) || 0,
           time: row[idxTime] || new Date().toLocaleTimeString(),
-
-          open: parseFloat(row[idxFirst]) || 0,
-          low: parseFloat(row[idxMin]) || 0,
-          high: parseFloat(row[idxMax]) || 0,
           valueToday: parseFloat(row[idxValueToday]) || 0,
           valueTodayRur: parseFloat(row[idxValueTodayRur]) || 0,
           valueTodayUsd: parseFloat(row[idxValueTodayUsd]) || 0,
@@ -152,9 +137,9 @@ export class MoexService {
         prevDate: row[idxPrevDate] || '',
         status: row[idxStatus] || '',
         prevPrice: parseFloat(row[idxPrevPrice]) || 0,
-        open: market.open ?? 0,
-        low: market.low ?? 0,
-        high: market.high ?? 0,
+        open: market.first ?? 0,
+        low: market.min ?? 0,
+        high: market.max ?? 0,
         valueToday: market.valueToday ?? 0,
         valueTodayRur: market.valueTodayRur ?? 0,
         valueTodayUsd: market.valueTodayUsd ?? 0,
@@ -162,14 +147,6 @@ export class MoexService {
         volumeToday: market.volumeToday ?? 0,
       };
     });
-  }
-
-  private findColumnIndex(columns: string[], possibleNames: string[]): number {
-    for (const name of possibleNames) {
-      const idx = columns.indexOf(name);
-      if (idx !== -1) return idx;
-    }
-    return -1;
   }
 
   getCandles(
