@@ -1,3 +1,35 @@
+.share-header {
+  margin: 0 1rem 0.5rem 1rem;
+  padding-top: 0.5rem;
+}
+
+.back-link {
+  display: inline-block;
+  color: #1976d2;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 1rem;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background 0.2s;
+  cursor: pointer;
+  z-index: 100; /* Чтобы быть поверх других элементов */
+  position: relative;
+}
+
+.back-link:hover {
+  background: rgba(25, 118, 210, 0.08);
+  text-decoration: underline;
+}
+
+/* Остальные стили, которые уже были */
+.content-wrapper {
+  display: flex;
+  gap: 2rem;
+  margin: 0 1rem 2rem 1rem;
+  min-height: 400px;
+}
+
 .content-wrapper {
   display: flex;
   gap: 2rem;

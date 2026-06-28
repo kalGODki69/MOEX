@@ -1,4 +1,6 @@
-<app-header [title]="(title$ | async) || ('shares.title' | transloco)"></app-header>
+<div class="share-header">
+    <a class="back-link" routerLink="/shares">← {{ 'share.messages.back' | transloco }}</a>
+</div>
 
 <div class="content-wrapper">
 

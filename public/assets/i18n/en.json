@@ -46,7 +46,8 @@
       "loading": "Loading...",
       "loadingChart": "Loading chart...",
       "noData": "No data for the selected period",
-      "loadingData": "Loading data..."
+      "loadingData": "Loading data...",
+      "back": "Back"
     },
     "type": {
       "shares": "Shares",

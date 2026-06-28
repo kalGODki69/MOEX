@@ -1,4 +1,4 @@
-<app-header [title]="title$ | async"></app-header>
+
 
 <tui-loader [loading]="(indices$ | async) === null" [textContent]="'share.messages.loading' | transloco">
     @if (indices$ | async; as indices) {

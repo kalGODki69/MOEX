@@ -1,9 +1,10 @@
-import { Component, Input, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { TuiTitle } from '@taiga-ui/core';
 import { TuiSegmented, TuiTabs, TuiTab } from '@taiga-ui/kit';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
+import { LayoutService } from '../../../services/layout.service';
 
 @Component({
   selector: 'app-header',
@@ -21,9 +22,9 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
   styleUrl: './header.less',
 })
 export class Header {
-  @Input() title = '';
-
   private readonly transloco = inject(TranslocoService);
+  private readonly router = inject(Router);
+  protected readonly layout = inject(LayoutService);
 
   readonly languages = ['en', 'ru'] as const;
 
@@ -33,5 +34,10 @@ export class Header {
 
   onLangChange(index: number): void {
     this.transloco.setActiveLang(this.languages[index]);
+  }
+
+  // Показываем навигацию только если мы не на странице акции (share/:secid)
+  get showNavigation(): boolean {
+    return !this.router.url.startsWith('/share/');
   }
 }

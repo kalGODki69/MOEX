@@ -1,10 +1,7 @@
-<app-header [title]="(title$ | async) || ('shares.title' | transloco)"></app-header>
+
 
 <tui-loader [loading]="(shares$ | async) === null" [textContent]="'share.messages.loading' | transloco">
     @if (shares$ | async; as shares) {
-        <app-shares-table
-                [data]="shares"
-                [clickable]="true"
-        ></app-shares-table>
+        <app-shares-table [data]="shares" [clickable]="true"></app-shares-table>
     }
 </tui-loader>

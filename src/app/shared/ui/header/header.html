@@ -1,21 +1,22 @@
 <div class="header-row">
-    <h2 tuiTitle="l">{{ title }}</h2>
+    <h2 tuiTitle="l">{{ layout.title() }}</h2>
 
     <tui-segmented
-        [activeItemIndex]="activeLangIndex"
-        (activeItemIndexChange)="onLangChange($event)"
+            [activeItemIndex]="activeLangIndex"
+            (activeItemIndexChange)="onLangChange($event)"
     >
         <button>EN</button>
         <button>RU</button>
     </tui-segmented>
 </div>
 
-<nav tuiTabs class="sub-nav">
-    <a tuiTab routerLink="/shares" routerLinkActive="active">
-        {{ 'header.navShares' | transloco }}
-    </a>
-
-    <a tuiTab routerLink="/indices" routerLinkActive="active">
-        {{ 'header.navIndices' | transloco }}
-    </a>
-</nav>
+@if (showNavigation) {
+    <nav tuiTabs class="sub-nav">
+        <a tuiTab routerLink="/shares" routerLinkActive="active">
+            {{ 'header.navShares' | transloco }}
+        </a>
+        <a tuiTab routerLink="/indices" routerLinkActive="active">
+            {{ 'header.navIndices' | transloco }}
+        </a>
+    </nav>
+}
