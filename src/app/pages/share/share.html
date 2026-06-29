@@ -15,7 +15,7 @@
         </tui-segmented>
 
         <div class="chart-wrapper">
-            @if (stats$ | async; as stats) {
+            @if (stats(); as stats) {
                 <div class="chart-stats">
                     <div class="stat-item">
                         <span class="stat-label">{{ 'share.statsLabels.open' | transloco }}</span>
@@ -57,16 +57,14 @@
             }
 
             <div class="chart-area">
-                <tui-loader [loading]="(candles$ | async) === null" [textContent]="'share.messages.loadingChart' | transloco">
-                    @if (candles$ | async; as candles) {
-                        @if (candles.length === 0) {
-                            <div class="chart-placeholder">
-                                {{ 'share.messages.noData' | transloco }}
-                            </div>
-                        } @else {
-                            @if (chartOptions$ | async; as options) {
-                                <div echarts [options]="options" class="chart-container"></div>
-                            }
+                <tui-loader [loading]="candles() === null" [textContent]="'share.messages.loadingChart' | transloco">
+                    @if (candles().length === 0) {
+                        <div class="chart-placeholder">
+                            {{ 'share.messages.noData' | transloco }}
+                        </div>
+                    } @else {
+                        @if (chartOptions(); as options) {
+                            <div echarts [options]="options" class="chart-container"></div>
                         }
                     }
                 </tui-loader>
@@ -75,8 +73,8 @@
     </div>
 
     <div class="params-area">
-        <tui-loader [loading]="(instrument$ | async) === null" [textContent]="'share.messages.loadingData' | transloco">
-            @if (instrument$ | async; as share) {
+        <tui-loader [loading]="instrument() === null" [textContent]="'share.messages.loadingData' | transloco">
+            @if (instrument(); as share) {
                 <app-instrument-params [share]="share"></app-instrument-params>
                 <app-trade-data [share]="share"></app-trade-data>
             }

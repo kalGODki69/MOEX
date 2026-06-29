@@ -1,7 +1,5 @@
-
-
-<tui-loader [loading]="(shares$ | async) === null" [textContent]="'share.messages.loading' | transloco">
-    @if (shares$ | async; as shares) {
-        <app-shares-table [data]="shares" [clickable]="true"></app-shares-table>
+<tui-loader [loading]="shares().length === 0" [textContent]="'share.messages.loading' | transloco">
+    @if (shares().length > 0) {
+        <app-shares-table [data]="shares()" [clickable]="true"></app-shares-table>
     }
 </tui-loader>

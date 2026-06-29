@@ -1,7 +1,7 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { AsyncPipe } from '@angular/common';
-import { combineLatest, interval, Observable, of } from 'rxjs';
+import { Component, inject, OnInit, signal, DestroyRef } from '@angular/core';
+import { combineLatest, interval, of } from 'rxjs';
 import { startWith, switchMap, catchError } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { SharesTableComponent } from '../../shared/ui/shares-table/shares-table';
 import { Share } from '../../shared/models/share.model';
@@ -13,7 +13,6 @@ import { LayoutService } from '../../services/layout.service';
   selector: 'app-indices',
   standalone: true,
   imports: [
-    AsyncPipe,
     TranslocoPipe,
     SharesTableComponent,
     TuiLoader,
@@ -25,25 +24,27 @@ export class Indices implements OnInit {
   private readonly moexService = inject(MoexService);
   private readonly transloco = inject(TranslocoService);
   private readonly layout = inject(LayoutService);
+  private readonly destroyRef = inject(DestroyRef);
 
-  indices$!: Observable<Share[]>;
+  indices = signal<Share[]>([]);
 
   ngOnInit(): void {
     this.layout.title.set('MOEX / Индексы');
 
     const refreshInterval$ = interval(30000).pipe(startWith(0));
 
-    this.indices$ = combineLatest([
+    combineLatest([
       this.transloco.langChanges$,
       refreshInterval$
     ]).pipe(
-        switchMap(([lang]) =>
-            this.moexService.getIndices(lang as 'ru' | 'en')
-        ),
-        catchError(error => {
-          console.error('Ошибка загрузки данных MOEX индексов', error);
-          return of([]);
-        })
-    );
+      switchMap(([lang]) =>
+        this.moexService.getIndices(lang as 'ru' | 'en')
+      ),
+      catchError(error => {
+        console.error('Ошибка загрузки данных MOEX индексов', error);
+        return of([]);
+      }),
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe((indices) => this.indices.set(indices));
   }
 }

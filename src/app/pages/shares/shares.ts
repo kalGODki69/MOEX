@@ -1,7 +1,7 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { AsyncPipe } from '@angular/common';
-import { Observable, of, combineLatest, interval } from 'rxjs';
-import { startWith, switchMap, catchError } from 'rxjs/operators';
+import { Component, inject, OnInit, signal, DestroyRef } from '@angular/core';
+import { combineLatest, interval, of } from 'rxjs';
+import { startWith, switchMap, catchError, map } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { SharesTableComponent } from '../../shared/ui/shares-table/shares-table';
 import { MoexService } from '../../services/moex';
@@ -13,7 +13,6 @@ import { LayoutService } from '../../services/layout.service';
   selector: 'app-shares',
   standalone: true,
   imports: [
-    AsyncPipe,
     SharesTableComponent,
     TranslocoPipe,
     TuiLoader,
@@ -25,26 +24,27 @@ export class Shares implements OnInit {
   private readonly moexService = inject(MoexService);
   private readonly transloco = inject(TranslocoService);
   private readonly layout = inject(LayoutService);
+  private readonly destroyRef = inject(DestroyRef);
 
-  shares$!: Observable<Share[]>;
+  shares = signal<Share[]>([]);
 
   ngOnInit(): void {
-    // Устанавливаем заголовок
     this.layout.title.set('MOEX / Акции');
 
     const refreshInterval$ = interval(30000).pipe(startWith(0));
 
-    this.shares$ = combineLatest([
+    combineLatest([
       this.transloco.langChanges$,
       refreshInterval$,
     ]).pipe(
-        switchMap(([lang]) =>
-            this.moexService.getShares(lang as 'ru' | 'en')
-        ),
-        catchError((err) => {
-          console.error('Ошибка загрузки данных MOEX', err);
-          return of([]);
-        })
-    );
+      switchMap(([lang]) =>
+        this.moexService.getShares(lang as 'ru' | 'en')
+      ),
+      catchError((err) => {
+        console.error('Ошибка загрузки данных MOEX', err);
+        return of([]);
+      }),
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe((shares) => this.shares.set(shares));
   }
 }
