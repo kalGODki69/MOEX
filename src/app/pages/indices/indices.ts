@@ -8,6 +8,7 @@ import { Share } from '../../shared/models/share.model';
 import { MoexService } from '../../services/moex';
 import { TuiLoader } from '@taiga-ui/core';
 import { LayoutService } from '../../services/layout.service';
+import { LIST_REFRESH_INTERVAL } from '../../shared/constants/share.constants';
 
 @Component({
   selector: 'app-indices',
@@ -31,7 +32,7 @@ export class Indices implements OnInit {
   ngOnInit(): void {
     this.layout.title.set('MOEX / Индексы');
 
-    const refreshInterval$ = interval(30000).pipe(startWith(0));
+    const refreshInterval$ = interval(LIST_REFRESH_INTERVAL).pipe(startWith(0));
 
     combineLatest([
       this.transloco.langChanges$,

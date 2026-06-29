@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, signal, DestroyRef } from '@angular/core';
 import { combineLatest, interval, of } from 'rxjs';
-import { startWith, switchMap, catchError, map } from 'rxjs/operators';
+import { startWith, switchMap, catchError } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { SharesTableComponent } from '../../shared/ui/shares-table/shares-table';
@@ -8,6 +8,7 @@ import { MoexService } from '../../services/moex';
 import { Share } from '../../shared/models/share.model';
 import { TuiLoader } from '@taiga-ui/core';
 import { LayoutService } from '../../services/layout.service';
+import { LIST_REFRESH_INTERVAL } from '../../shared/constants/share.constants';
 
 @Component({
   selector: 'app-shares',
@@ -31,7 +32,7 @@ export class Shares implements OnInit {
   ngOnInit(): void {
     this.layout.title.set('MOEX / Акции');
 
-    const refreshInterval$ = interval(30000).pipe(startWith(0));
+    const refreshInterval$ = interval(LIST_REFRESH_INTERVAL).pipe(startWith(0));
 
     combineLatest([
       this.transloco.langChanges$,

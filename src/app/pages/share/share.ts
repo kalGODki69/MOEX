@@ -7,9 +7,11 @@ import { toSignal, toObservable, takeUntilDestroyed } from '@angular/core/rxjs-i
 import { MoexService } from '../../services/moex';
 import { LayoutService } from '../../services/layout.service';
 import { Share as ShareInterface } from '../../shared/models/share.model';
+import { INTERVAL_LABELS, CHART_REFRESH_INTERVAL } from '../../shared/constants/share.constants';
+import { calculateStats, buildChartOptions } from '../../shared/utils/chart.utils';
+import { formatDateRange } from '../../shared/utils/date.utils';
 
 import { NgxEchartsModule } from 'ngx-echarts';
-import { EChartsOption } from 'echarts';
 
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { InstrumentParamsComponent } from '../../shared/ui/instrument-params/instrument-params';
@@ -60,177 +62,11 @@ export class Share implements OnInit {
     volume: number;
   }[]>([]);
 
-  stats = computed(() => {
-    const data = this.candles();
-    if (!data?.length) {
-      return null;
-    }
+  stats = computed(() => calculateStats(this.candles()));
 
-    const closes = data.map((c) => c.close);
-    const open = closes[0];
-    const close = closes[closes.length - 1];
-    const high = Math.max(...closes);
-    const low = Math.min(...closes);
-    const changePercent = open !== 0 ? ((close - open) / open) * 100 : 0;
-    const totalVolume = data.reduce((sum, c) => sum + c.volume, 0);
+  chartOptions = computed(() => buildChartOptions(this.candles(), this.currentLang() as 'ru' | 'en'));
 
-    return { open, high, low, close, changePercent, volume: totalVolume };
-  });
-
-  chartOptions = computed<EChartsOption | null>(() => {
-    const data = this.candles();
-    const lang = this.currentLang() as 'ru' | 'en';
-
-    if (!data?.length) {
-      return null;
-    }
-
-    const dates = data.map((item) => item.date);
-    const prices = data.map((item) => item.close);
-    const volumes = data.map((item) => item.volume);
-
-    const totalVolume = volumes.reduce((sum, value) => sum + value, 0);
-
-    const barData = data.map((item, index) => {
-      let color = '#6d89f9';
-
-      if (index > 0) {
-        const prevClose = data[index - 1].close;
-        color = item.close >= prevClose ? '#00a651' : '#e53935';
-      } else {
-        color = item.close >= item.open ? '#00a651' : '#e53935';
-      }
-
-      return {
-        value: item.volume,
-        itemStyle: { color },
-      };
-    });
-
-    const priceLabel = lang === 'ru' ? 'Цена' : 'Price';
-    const volumeLabel = lang === 'ru' ? 'Объём' : 'Volume';
-    const volumeText = lang === 'ru' ? 'Объем' : 'Volume';
-
-    const monthNames: Record<'ru' | 'en', string[]> = {
-      ru: ['янв', 'фев', 'мар', 'апр', 'май', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'],
-      en: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-    };
-
-    return {
-      tooltip: {
-        trigger: 'axis',
-        axisPointer: { type: 'cross' },
-        formatter: (params: any) => {
-          let result = params[0].axisValue + '<br/>';
-          params.forEach((p: any) => {
-            if (p.seriesName) {
-              result += `${p.seriesName}: ${p.value}<br/>`;
-            }
-          });
-          return result;
-        },
-      },
-      graphic: [
-        {
-          type: 'text',
-          left: '5%',
-          top: '68%',
-          style: {
-            text: `${volumeText}: ${totalVolume.toLocaleString()}`,
-            fill: '#888',
-            fontSize: 14,
-            fontWeight: 'bold',
-          },
-        },
-      ],
-      grid: [
-        { left: '5%', right: '5%', top: '10%', height: '50%' },
-        { left: '5%', right: '5%', top: '67%', height: '25%' },
-      ],
-      xAxis: [
-        {
-          type: 'category',
-          data: dates,
-          gridIndex: 0,
-          axisLabel: { show: false },
-          splitLine: { show: false },
-        },
-        {
-          type: 'category',
-          data: dates,
-          gridIndex: 1,
-          axisLabel: {
-            rotate: 30,
-            interval: 'auto',
-            fontSize: 10,
-            color: '#888',
-            formatter: (value: string) => {
-              const date = new Date(value);
-              return `${date.getDate()} ${monthNames[lang][date.getMonth()]}`;
-            },
-          },
-          splitLine: { show: false },
-        },
-      ],
-      yAxis: [
-        {
-          type: 'value',
-          gridIndex: 0,
-          scale: true,
-          splitLine: { show: true },
-          position: 'right',
-        },
-        {
-          type: 'value',
-          gridIndex: 1,
-          scale: true,
-          splitLine: { show: true },
-          position: 'right',
-          max: (value: { max: number; min: number }) => value.max * 1.1,
-        },
-      ],
-      series: [
-        {
-          name: priceLabel,
-          type: 'line',
-          data: prices,
-          smooth: true,
-          lineStyle: { color: '#6d89f9', width: 2 },
-          areaStyle: { color: '#0743d6', opacity: 0.1 },
-          symbol: 'circle',
-          symbolSize: 4,
-          xAxisIndex: 0,
-          yAxisIndex: 0,
-          markLine:
-            prices.length > 0
-              ? {
-                  silent: true,
-                  symbol: 'none',
-                  lineStyle: { color: 'rgb(52 193 126)', type: 'dashed', width: 2 },
-                  label: { show: false },
-                  data: [{ yAxis: prices[prices.length - 1] }],
-                }
-              : undefined,
-        },
-        {
-          name: volumeLabel,
-          type: 'bar',
-          data: barData,
-          xAxisIndex: 1,
-          yAxisIndex: 1,
-          barWidth: '80%',
-        },
-      ],
-    } as EChartsOption;
-  });
-
-  readonly intervalLabels = [
-    { value: 1, labelKey: 'share.intervalLabels.1m' },
-    { value: 5, labelKey: 'share.intervalLabels.5m' },
-    { value: 30, labelKey: 'share.intervalLabels.30m' },
-    { value: 60, labelKey: 'share.intervalLabels.60m' },
-    { value: 1440, labelKey: 'share.intervalLabels.1440m' },
-  ];
+  readonly intervalLabels = INTERVAL_LABELS;
 
   interval = signal(1);
 
@@ -240,7 +76,7 @@ export class Share implements OnInit {
 
   private refresh$ = combineLatest([
     this.transloco.langChanges$,
-    interval(5000).pipe(startWith(0)),
+    interval(CHART_REFRESH_INTERVAL).pipe(startWith(0)),
   ]).pipe(map(([lang]) => lang as 'ru' | 'en'));
 
   private secid$ = this.route.params.pipe(map((params) => params['secid'] as string));
@@ -269,27 +105,10 @@ export class Share implements OnInit {
         switchMap(([secid, lang, candleInterval]) => {
           if (!secid) return of([]);
 
-          const now = new Date();
-          const from = new Date();
-
-          let days = 30;
-          if (candleInterval <= 1) {
-            days = 1;
-          } else if (candleInterval <= 5) {
-            days = 3;
-          } else if (candleInterval <= 30) {
-            days = 7;
-          } else if (candleInterval <= 60) {
-            days = 14;
-          }
-
-          from.setDate(now.getDate() - days);
-
-          const fromStr = from.toISOString().slice(0, 10);
-          const toStr = now.toISOString().slice(0, 10);
+          const { from, to } = formatDateRange(candleInterval);
 
           return this.moexService
-            .getCandles(secid, fromStr, toStr, candleInterval, lang)
+            .getCandles(secid, from, to, candleInterval, lang)
             .pipe(catchError(() => of([])));
         }),
         takeUntilDestroyed(this.destroyRef)
