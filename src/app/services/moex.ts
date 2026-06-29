@@ -7,8 +7,8 @@ import {catchError} from 'rxjs/operators';
 @Injectable({ providedIn: 'root' })
 export class MoexService {
   private http = inject(HttpClient);
-  private baseUrl = 'https://iss.moex.com/iss/engines/stock/markets/shares/boardgroups/57/securities.json?iss.only=marketdata,securities';
-  private indexUrl = 'https://iss.moex.com/iss/engines/stock/markets/index/securities.json?iss.only=marketdata,securities';
+  private baseUrl = '/api/iss/engines/stock/markets/shares/boardgroups/57/securities.json?iss.only=marketdata,securities';
+  private indexUrl = '/api/iss/engines/stock/markets/index/securities.json?iss.only=marketdata,securities';
 
   getShares(lang: 'ru' | 'en' = 'ru'): Observable<Share[]> {
     const url = `${this.baseUrl}&lang=${lang}&sort_column=SHORTNAME&sort_order=asc`;
@@ -25,7 +25,7 @@ export class MoexService {
   }
 
   getShare(secid: string, lang: 'ru' | 'en' = 'ru'): Observable<Share> {
-    const url = `https://iss.moex.com/iss/engines/stock/markets/shares/boardgroups/57/securities/${secid}.json?iss.only=marketdata,securities&lang=${lang}`;
+    const url = `/api/iss/engines/stock/markets/shares/boardgroups/57/securities/${secid}.json?iss.only=marketdata,securities&lang=${lang}`;
     return this.http.get<any>(url).pipe(
       map(response => {
         const shares = this.transformResponse(response);
@@ -156,7 +156,7 @@ export class MoexService {
     interval: number = 24,
     lang: 'ru' | 'en' = 'ru'
   ): Observable<{ date: string; open: number; high: number; low: number; close: number; volume: number }[]> {
-    const url = `https://iss.moex.com/iss/engines/stock/markets/shares/securities/${secid}/candles.json?from=${from}&till=${till}&interval=${interval}&lang=${lang}`;
+    const url = `/api/iss/engines/stock/markets/shares/securities/${secid}/candles.json?from=${from}&till=${till}&interval=${interval}&lang=${lang}`;
     return this.http.get<any>(url).pipe(
       map(response => {
         const data = response.candles?.data || [];
