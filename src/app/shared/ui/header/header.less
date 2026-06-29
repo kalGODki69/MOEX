@@ -9,12 +9,12 @@
 
 .sub-nav {
   margin: 0.5rem 1rem 0;
-  border-top: 1px solid #e0e0e0;
+  border-top: 1px solid var(--tui-border-normal);
   padding: 1rem 0;
 
   a {
     text-decoration: none;
-    color: #474747;
+    color: var(--tui-text-primary);
     font-weight: 500;
     font-size: 1rem;
     padding: 0.5rem 0.75rem;
@@ -22,11 +22,11 @@
     transition: background 0.2s;
 
     &:hover {
-      background: #e9ecef;
+      background: var(--tui-background-hover);
     }
 
     &.active {
-      color: #000;
+      color: var(--tui-text-primary);
       text-decoration: underline;
       text-underline-offset: 7px;
       text-decoration-thickness: 2px;

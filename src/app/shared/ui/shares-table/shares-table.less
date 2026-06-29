@@ -15,22 +15,22 @@ th.sortable {
 }
 
 th.sortable:hover {
-  background-color: #f5f5f5;
+  background-color: var(--tui-background-base);
 }
 
 .sort-indicator {
   margin-left: 4px;
   font-size: 10px;
-  color: #1a1a1a;
+  color: var(--tui-text-primary);
 }
 
 .sort-arrows {
-  color: #ccc;
+  color: var(--tui-text-tertiary);
 }
 
 td {
   border: none;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid var(--tui-border-normal);
 }
 
 tbody tr:last-child td {
@@ -52,7 +52,7 @@ tr.clickable {
 }
 
 tr.clickable:hover {
-  background: #f5f5f5;
+  background: var(--tui-background-base);
 }
 
 tr.clickable td {
@@ -75,22 +75,30 @@ tr.clickable td {
 }
 
 .page-size-label {
-  color: #8f95b2;
+  color: var(--tui-text-tertiary);
   font-size: 14px;
   white-space: nowrap;
 }
 
 .pagination-info {
-  color: #8f95b2;
+  color: var(--tui-text-tertiary);
   font-size: 16px;
 }
 
 .pagination-total {
-  color: #1a1a1a;
+  color: var(--tui-text-primary);
   font-weight: 600;
 }
 
 .pagination-controls {
   margin-left: auto;
   margin-right: 16px;
+}
+
+.positive {
+  color: var(--tui-status-positive);
+}
+
+.negative {
+  color: var(--tui-status-negative);
 }

@@ -31,7 +31,7 @@
                     <td tuiTd>
                         @switch (col.key) {
                             @case ('changePercents') {
-                                <span [style.color]="item.changePercents >= 0 ? 'green' : 'red'">
+                                <span [class.positive]="item.changePercents >= 0" [class.negative]="item.changePercents < 0">
                   {{ item.changePercents | number:'1.2-2' }}%
                 </span>
                             }

@@ -5,7 +5,7 @@
 
 .back-link {
   display: inline-block;
-  color: #1976d2;
+  color: var(--tui-link);
   text-decoration: none;
   font-weight: 500;
   font-size: 1rem;
@@ -13,21 +13,13 @@
   border-radius: 4px;
   transition: background 0.2s;
   cursor: pointer;
-  z-index: 100; /* Чтобы быть поверх других элементов */
+  z-index: 100;
   position: relative;
 }
 
 .back-link:hover {
-  background: rgba(25, 118, 210, 0.08);
+  background: var(--tui-background-hover);
   text-decoration: underline;
-}
-
-/* Остальные стили, которые уже были */
-.content-wrapper {
-  display: flex;
-  gap: 2rem;
-  margin: 0 1rem 2rem 1rem;
-  min-height: 400px;
 }
 
 .content-wrapper {
@@ -81,11 +73,11 @@ tui-segmented {
   top: -4px;
   bottom: -4px;
   width: 1px;
-  background: #e5e5e5;
+  background: var(--tui-border-normal);
 }
 
 .stat-label {
-  color: #8f96a3;
+  color: var(--tui-text-tertiary);
   font-size: 0.9rem;
   font-weight: 600;
 }
@@ -104,7 +96,15 @@ tui-segmented {
 
 .chart-placeholder {
   font-size: 1.2rem;
-  color: #999;
+  color: var(--tui-text-tertiary);
+}
+
+.positive {
+  color: var(--tui-status-positive);
+}
+
+.negative {
+  color: var(--tui-status-negative);
 }
 
 .params-area {
