@@ -67,17 +67,31 @@
     </tbody>
 </table>
 
-@if (data.length > itemsPerPage) {
+@if (data.length > pageSizeOptions[0]) {
     <div class="pagination">
-        <div class="pagination-info">
-            {{ 'shareTable.pages' | transloco }}
-            <span class="pagination-total">{{ totalPages }}</span>
+        <div class="page-size">
+            <span class="page-size-label">{{ 'shareTable.rowsPerPage' | transloco }}</span>
+            <tui-segmented
+                    [activeItemIndex]="pageSizeIndex"
+                    (activeItemIndexChange)="onPageSizeChange($event)"
+            >
+                @for (size of pageSizeOptions; track size) {
+                    <button>{{ size }}</button>
+                }
+            </tui-segmented>
         </div>
 
-        <tui-pagination
-            class="pagination-controls"
-            [length]="totalPages"
-            [(index)]="pageIndex"
-        />
+        @if (data.length > pageSize()) {
+            <div class="pagination-info">
+                {{ 'shareTable.pages' | transloco }}
+                <span class="pagination-total">{{ totalPages }}</span>
+            </div>
+
+            <tui-pagination
+                    class="pagination-controls"
+                    [length]="totalPages"
+                    [(index)]="pageIndex"
+            />
+        }
     </div>
 }

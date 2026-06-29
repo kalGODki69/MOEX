@@ -6,7 +6,7 @@ import {
   TuiTableTd,
   TuiTableTh,
 } from '@taiga-ui/addon-table';
-import { TuiPagination } from '@taiga-ui/kit';
+import { TuiPagination, TuiSegmented } from '@taiga-ui/kit';
 import { RouterModule } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 
@@ -22,6 +22,7 @@ import { Share } from '../../models/share.model';
     TuiTableTh,
     TuiTableTd,
     TuiPagination,
+    TuiSegmented,
     RouterModule,
     TranslocoPipe,
   ],
@@ -32,14 +33,24 @@ export class SharesTableComponent {
   @Input() data: Share[] = [];
   @Input() clickable = false;
 
-  readonly itemsPerPage = 10;
+  readonly pageSizeOptions = [10, 25, 50, 100];
+  readonly pageSize = signal(10);
   readonly pageIndex = signal(0);
 
   sortBy = signal<keyof Share | null>(null);
   sortDirection = signal<'asc' | 'desc'>('asc');
 
+  get pageSizeIndex(): number {
+    return this.pageSizeOptions.indexOf(this.pageSize());
+  }
+
+  onPageSizeChange(index: number): void {
+    this.pageSize.set(this.pageSizeOptions[index]);
+    this.pageIndex.set(0);
+  }
+
   get totalPages(): number {
-    return Math.max(1, Math.ceil(this.data.length / this.itemsPerPage));
+    return Math.max(1, Math.ceil(this.data.length / this.pageSize()));
   }
 
   readonly headers: ReadonlyArray<{
@@ -84,8 +95,8 @@ export class SharesTableComponent {
   }
 
   get paginatedData(): Share[] {
-    const start = this.pageIndex() * this.itemsPerPage;
-    return this.sortedData.slice(start, start + this.itemsPerPage);
+    const start = this.pageIndex() * this.pageSize();
+    return this.sortedData.slice(start, start + this.pageSize());
   }
 
   onHeaderClick(key: keyof Share): void {

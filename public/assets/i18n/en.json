@@ -64,7 +64,8 @@
     "max": "Max.",
     "volume": "Volume",
     "time": "Time",
-    "pages": "Pages"
+    "pages": "Pages",
+    "rowsPerPage": "Rows per page"
   },
   "header": {
     "navShares": "Shares",

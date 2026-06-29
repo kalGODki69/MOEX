@@ -64,7 +64,8 @@
     "max": "Макс.",
     "volume": "Объем",
     "time": "Время",
-    "pages": "Страниц"
+    "pages": "Страниц",
+    "rowsPerPage": "Строк на странице"
   },
   "header": {
     "navShares": "Акции",
