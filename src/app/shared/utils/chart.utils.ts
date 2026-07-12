@@ -64,6 +64,10 @@ export function buildChartOptions(
       trigger: 'axis',
       axisPointer: { type: 'cross' },
       formatter: (params: any) => {
+        const volumeParam = params.find((p: any) => p.seriesName === volumeLabel);
+        if (volumeParam) {
+          return `${volumeLabel}: ${volumeParam.value.toLocaleString()}`;
+        }
         let result = params[0].axisValue + '<br/>';
         params.forEach((p: any) => {
           if (p.seriesName) {
@@ -102,16 +106,7 @@ export function buildChartOptions(
         type: 'category',
         data: dates,
         gridIndex: 1,
-        axisLabel: {
-          rotate: 30,
-          interval: 'auto',
-          fontSize: 10,
-          color: '#888',
-          formatter: (value: string) => {
-            const date = new Date(value);
-            return `${date.getDate()} ${MONTH_NAMES[lang][date.getMonth()]}`;
-          },
-        },
+        axisLabel: { show: false },
         splitLine: { show: false },
       },
     ],

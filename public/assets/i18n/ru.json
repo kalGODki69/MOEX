@@ -6,6 +6,7 @@
     "title": "MOEX / Индексы"
   },
   "share": {
+    "title": "MOEX / Акции / {{name}}",
     "params": {
       "code": "Код ценной бумаги",
       "isin": "ISIN код",

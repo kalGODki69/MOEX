@@ -30,9 +30,13 @@ export class Indices implements OnInit {
   indices = signal<Share[]>([]);
 
   ngOnInit(): void {
-    this.layout.title.set('MOEX / Индексы');
-
     const refreshInterval$ = interval(LIST_REFRESH_INTERVAL).pipe(startWith(0));
+
+    this.transloco.langChanges$.pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe(() => {
+      this.layout.title.set(this.transloco.translate('indices.title'));
+    });
 
     combineLatest([
       this.transloco.langChanges$,

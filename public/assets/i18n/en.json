@@ -6,6 +6,7 @@
     "title": "MOEX / Indices"
   },
   "share": {
+    "title": "MOEX / Shares / {{name}}",
     "params": {
       "code": "Security code",
       "isin": "ISIN code",

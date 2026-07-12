@@ -30,9 +30,13 @@ export class Shares implements OnInit {
   shares = signal<Share[]>([]);
 
   ngOnInit(): void {
-    this.layout.title.set('MOEX / Акции');
-
     const refreshInterval$ = interval(LIST_REFRESH_INTERVAL).pipe(startWith(0));
+
+    this.transloco.langChanges$.pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe(() => {
+      this.layout.title.set(this.transloco.translate('shares.title'));
+    });
 
     combineLatest([
       this.transloco.langChanges$,

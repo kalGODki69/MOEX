@@ -45,9 +45,10 @@ export class Share implements OnInit {
 
   private titleEffect = effect(() => {
     const instrument = this.instrument();
+    const lang = this.currentLang();
     const name = instrument?.name || instrument?.code || '';
     if (name) {
-      this.layout.title.set(`MOEX / Акции / ${name}`);
+      this.layout.title.set(this.transloco.translate('share.title', { name }));
     }
   });
 
